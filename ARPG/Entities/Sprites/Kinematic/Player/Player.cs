@@ -17,7 +17,6 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 
 		public override void Update(float deltaTime)
 		{
-			/*
 			var keyboard = Keyboard.GetState();
 
 			if(keyboard.IsKeyDown(Keys.W))
@@ -37,12 +36,15 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 			velocity = movement * 25f * deltaTime;
 
 			Position += velocity;
-			*/
+			
+			/*
 			Position = new Vector2(Mouse.GetState().X, Mouse.GetState().Y) / 4;
+			*/
 		}
 
 		public void OnCollide(Sprite other)
 		{
+			Console.WriteLine("E");
 		}
 	}
 }

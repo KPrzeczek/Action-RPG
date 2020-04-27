@@ -92,7 +92,7 @@ namespace ARPG.Meta.Camera
 				position = pos;
 			}
 
-			if(targetPosition == Position)
+			if(new Vector2((int)targetPosition.X, (int)targetPosition.Y) == new Vector2((int)Position.X, (int)Position.Y))
 			{
 				targetOverride = false;
 			}

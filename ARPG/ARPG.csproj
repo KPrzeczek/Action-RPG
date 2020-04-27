@@ -54,6 +54,7 @@
     <Compile Include="Meta\Camera\Camera.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Collisions\BoxCollider.cs" />
     <Compile Include="Util\Collisions\CollisionHelper.cs" />
     <Compile Include="Util\Collisions\ICollider.cs" />
     <Compile Include="Util\Collisions\ISolid.cs" />

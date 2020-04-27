@@ -74,28 +74,16 @@ namespace ARPG.Entities.Sprites
 		}
 
 		public ICollider Collider
-		{
+		{ 
 			get
 			{
-				return new PolygonCollider()
+				return new BoxCollider()
 				{
 					Parent = this,
-					Original = new List<Vector2>()
-					{
-						new Vector2(0, 0),
-						new Vector2(Rectangle.Width, 0),
-						new Vector2(Rectangle.Width, Rectangle.Height),
-						new Vector2(0, Rectangle.Width)
-					},
-					Points = new List<Vector2>()
-					{
-						new Vector2(Rectangle.X, Rectangle.Y),
-						new Vector2(Rectangle.X + Rectangle.Width, Rectangle.Y),
-						new Vector2(Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height),
-						new Vector2(Rectangle.X, Rectangle.Y + Rectangle.Height)
-					}
+					Rectangle = this.Rectangle,
+					Position = this.Position
 				};
-			}
+			} 
 		}
 
 		public Sprite(Texture2D tex)

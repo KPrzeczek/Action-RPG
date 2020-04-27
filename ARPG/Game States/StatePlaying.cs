@@ -73,13 +73,21 @@ namespace ARPG.Game_States
 					{
 						Vector2 aVelocity = a.Position - a.PreviousPosition;
 
-						CollisionHelper.UpdatePhysics((PolygonCollider)a.Collider, (PolygonCollider)b.Collider, aVelocity);
-						/*
-						if(CollisionHelper.ShapeOverlap_SAT_STATIC((PolygonCollider)a.Collider, (PolygonCollider)b.Collider))
+						if(a.Collider is PolygonCollider && b.Collider is PolygonCollider)
 						{
-							((ICollidable)a).OnCollide(b);
+							if(CollisionHelper.ShapeOverlap_SAT((PolygonCollider)a.Collider, (PolygonCollider)b.Collider))
+							{
+								((ICollidable)a).OnCollide(b);
+							}
 						}
-						*/
+
+						if(a.Collider is BoxCollider && b.Collider is BoxCollider)
+						{
+							if(CollisionHelper.ShapeOverlap_AABB_STATIC((BoxCollider)a.Collider, (BoxCollider)b.Collider))
+							{
+								((ICollidable)a).OnCollide(b);
+							}
+						}
 					}
 				}
 			}
@@ -115,17 +123,29 @@ namespace ARPG.Game_States
 
 			foreach(Sprite sprite in entities)
 			{
-				PolygonCollider polyCollider = (PolygonCollider)sprite.Collider;
-
-				for(int ii = 0; ii < polyCollider.Points.Count - 1; ii++)
+				/*
+				if(sprite.Collider is PolygonCollider)
 				{
-					var point1 = polyCollider.Points[ii];
-					var point2 = polyCollider.Points[ii + 1];
+					PolygonCollider polyCollider = (PolygonCollider)sprite.Collider;
 
-					DebugTools.DrawLine(spriteBatch, point1, point2, Color.White);
+					for(int ii = 0; ii < polyCollider.Points.Count - 1; ii++)
+					{
+						var point1 = polyCollider.Points[ii];
+						var point2 = polyCollider.Points[ii + 1];
+
+						DebugTools.DrawLine(spriteBatch, point1, point2, Color.White);
+					}
+
+					DebugTools.DrawLine(spriteBatch, polyCollider.Points[3], polyCollider.Points[0], Color.White, 1f);
 				}
+				*/
 
-				DebugTools.DrawLine(spriteBatch, polyCollider.Points[3], polyCollider.Points[0], Color.White, 1f);
+				if(sprite.Collider is BoxCollider)
+				{
+					BoxCollider boxCollider = (BoxCollider)sprite.Collider;
+
+					DebugTools.DrawRectangle(spriteBatch, boxCollider.Rectangle, Color.Maroon);
+				}
 			}
 		}
 

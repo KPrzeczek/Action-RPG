@@ -16,38 +16,6 @@ namespace ARPG.Util.Collisions
 
 	public static class CollisionHelper
 	{
-		public static void UpdatePhysics(PolygonCollider r1, PolygonCollider r2, Vector2 r1Velocity)
-		{
-			if(GoingToCollide(r1, r2, r1Velocity))
-				FuckingDontPlease(r1, r2, r1Velocity);
-		}
-
-		private static bool GoingToCollide(PolygonCollider r1, PolygonCollider r2, Vector2 r1Velocity)
-		{
-			var r1Mod = new PolygonCollider()
-			{
-				Position = r1.Position + r1Velocity,
-				Original = r1.Original,
-				Points = r1.Points
-			};
-
-			if(ShapeOverlap_SAT(r1Mod, r2))
-			{
-				return true;
-			}
-
-			return false;
-		}
-
-		private static void FuckingDontPlease(PolygonCollider r1, PolygonCollider r2, Vector2 r1Velocity)
-		{
-			var pos = r1.Parent.Position;
-
-			pos -= r1Velocity;
-
-			r1.Parent.Position = pos;
-		}
-
 		#region Intersection Methods
 		/// <summary>
 		/// Much more complex than AABB collision detection. Works with CONVEX shapes.
@@ -102,7 +70,57 @@ namespace ARPG.Util.Collisions
 			return true;
 		}
 
+		public static bool ShapeOverlap_AABB(BoxCollider r1, BoxCollider r2)
+		{
+			var b1 = r1.Rectangle;
+			var b2 = r2.Rectangle;
 
+			if(b1.X < b2.X + b2.Width &&
+			    b1.X + b1.Width > b2.X &&
+			    b1.Y < b2.Y + b2.Height &&
+			    b1.Y + b1.Height > b2.Y)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		public static bool ShapeOverlap_AABB_STATIC(BoxCollider r1, BoxCollider r2)
+		{
+			var b1 = r1.Rectangle;
+			var b2 = r2.Rectangle;
+
+			if(ShapeOverlap_AABB(r1, r2))
+			{
+				//======[COLLISION VALUES]======//
+				float dl = Math.Abs(b1.Right - b2.Left);
+				float dt = Math.Abs(b1.Bottom - b2.Top);
+				float dr = Math.Abs(b1.Left - b2.Right);
+				float db = Math.Abs(b1.Top - b2.Bottom);
+
+				float dh = (dl < dr) ? dl : dr;
+				float dv = (dt < db) ? dt : db;
+				//==============================//
+
+				//======[COLLISION RESPONSE]====//
+				var pos = r1.Parent.Position;
+
+				if(dh < dv)
+				{
+					pos.X += (dl < dr) ? -dl : dr;
+				}
+				else
+				{
+					pos.Y += (dt < db) ? -dt : db;
+				}
+
+				r1.Parent.Position = pos;
+				//==============================//
+			}
+
+			return false;
+		}
 
 		/*
 		public static bool ShapeOverlap_SAT_STATIC(PolygonCollider r1, PolygonCollider r2)
