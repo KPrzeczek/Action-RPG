@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ARPG.Util.Collisions
+namespace ARPG.Util.Collisions.Colliders
 {
-	public class BoxCollider : ICollider
+	public class PolygonCollider : ICollider
 	{
-		public Sprite Parent;
+		public List<Vector2> Points;
+		public List<Vector2> Original;
 
-		public Rectangle Rectangle { get; set; }
+		public Sprite Parent;
 
 		public Vector2 Position
 		{

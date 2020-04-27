@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ARPG.Util.Collisions
+namespace ARPG.GUI
 {
-	public interface ISolid
+	public interface IGuiComponent : IComponent
 	{
 	}
 }

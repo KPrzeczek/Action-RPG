@@ -8,7 +8,7 @@ using ARPG.Util.Collisions;
 
 namespace ARPG.Entities.Sprites.Static
 {
-	public class Wall : Sprite, ICollidable, ISolid
+	public class Wall : Sprite, ICollidable
 	{
 		public Wall(Texture2D tex) : base(tex)
 		{

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ARPG.Util.Collisions.Colliders;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,6 +86,10 @@ namespace ARPG.Util.Collisions
 
 			return false;
 		}
+
+		/*
+		 * https://github.com/KrossX/misc/blob/master/lwings/src/lwings_game.c#L2112
+		 */
 
 		public static bool ShapeOverlap_AABB_STATIC(BoxCollider r1, BoxCollider r2)
 		{
