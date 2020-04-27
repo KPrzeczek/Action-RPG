@@ -17,7 +17,6 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 
 		public override void Update(float deltaTime)
 		{
-			Position = new Vector2(Mouse.GetState().X, Mouse.GetState().Y) / 4;
 		}
 
 		public void OnCollide(Sprite other)
