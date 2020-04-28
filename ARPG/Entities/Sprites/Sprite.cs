@@ -20,12 +20,28 @@ namespace ARPG.Entities.Sprites
 
 		protected Texture2D texture;
 
+		protected bool flipHorizontal { get; set; }
+
 		protected float layer { get; set; }
 		protected Vector2 origin { get; set; }
 
 		protected Vector2 position { get; set; }
 		protected float rotation { get; set; }
 		protected float scale { get; set; }
+
+		public bool FlipHorizontal
+		{
+			get
+			{
+				return flipHorizontal;
+			}
+			set
+			{
+				flipHorizontal = value;
+				if(AnimationManager != null)
+					AnimationManager.FlipHorizontal = value;
+			}
+		}
 
 		public Color Colour { get; set; }
 		public readonly Color[] TextureData;
@@ -183,7 +199,12 @@ namespace ARPG.Entities.Sprites
 		{
 			if(texture != null)
 			{
-				spriteBatch.Draw(texture, Position, null, Colour, Rotation, Origin, Scale, SpriteEffects.None, Layer);
+				var spriteEffects = SpriteEffects.None;
+
+				if(FlipHorizontal)
+					spriteEffects = SpriteEffects.FlipHorizontally;
+
+				spriteBatch.Draw(texture, Position, null, Colour, Rotation, Origin, Scale, spriteEffects, Layer);
 			}
 			else
 			{

@@ -43,7 +43,7 @@ namespace ARPG.Game_States
 			{
 				{
 					"Walk",
-					new Animation(Content.Load<Texture2D>("player/player"), 9, 1)
+					new Animation(Content.Load<Texture2D>("world/forest/environment/decor/bush"), 1, 1)
 					{
 						IsLooping = true,
 						FrameSpeed = 0.1f

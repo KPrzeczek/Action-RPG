@@ -14,6 +14,8 @@ namespace ARPG.Managers.Sprites
 
         public Animation CurrentAnimation => animation;
 
+        public bool FlipHorizontal { get; set; }
+
         public float Layer { get; set; }
         public Vector2 Origin { get; set; }
 		
@@ -46,7 +48,12 @@ namespace ARPG.Managers.Sprites
 		
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(
+			var spriteEffects = SpriteEffects.None;
+
+			if(FlipHorizontal)
+				spriteEffects = SpriteEffects.FlipHorizontally;
+
+			spriteBatch.Draw(
                 animation.Texture,
                 Position,
                 new Rectangle(
@@ -59,7 +66,7 @@ namespace ARPG.Managers.Sprites
                 Rotation,
                 Origin,
                 Scale,
-                SpriteEffects.None,
+                spriteEffects,
                 Layer
             );
         }

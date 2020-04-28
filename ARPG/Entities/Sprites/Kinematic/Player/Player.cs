@@ -6,11 +6,14 @@ using System.Collections.Generic;
 using ARPG.Util.States;
 using ARPG.Entities.Sprites.Kinematic.Player.States;
 using ARPG.Models.Sprites.Player;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ARPG.Entities.Sprites.Kinematic.Player
 {
 	public class Player : Sprite, ICollidable
 	{
+		#region Fields
+
 		private StateMachine stateMachine;
 
 		private bool isMoving;
@@ -22,11 +25,21 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 		private Vector2 velocity;
 		private Vector2 movement;
 
+		#endregion
+
+		#region Properties
+
 		public PlayerInput Input { get; set; }
 		public PlayerStats Stats { get; set; }
 
+		#endregion
+
+		#region Methods
+
 		public Player(Dictionary<string, Animation> anims) : base(anims)
 		{
+			Game1.NativeCamera.TargetSprite = this;
+
 			stateMachine = new StateMachine(new PlayerIdleState(this));
 
 			Stats = new PlayerStats();
@@ -42,8 +55,6 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 
 			AutoSpriteSorter.Continuous = true;
 		}
-
-		#region Methods
 
 		public override void Update(float deltaTime)
 		{
@@ -80,27 +91,38 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 
 			#endregion
 
+			#region State Switching
+
 			if(velocity != Vector2.Zero)
 				isMoving = true;
 			else
 				isMoving = false;
 
 			if(!isMoving)
-			{
 				RequestState(new PlayerIdleState(this));
-			}
 			else if(isMoving && !(stateMachine.CurrentState is PlayerRunningState))
-			{
 				RequestState(new PlayerWalkState(this));
+
+			#endregion
+
+			if(movement.X > 0)
+			{
+				FlipHorizontal = true;
+			}
+			else if(movement.X < 0)
+			{
+				FlipHorizontal = false;
 			}
 
-			// Update Position
 			Position += velocity * Stats.SpeedModifier;
 
-			// Misc
+			#region Misc
+
 			stateMachine.Update(deltaTime);
 			AnimationManager.Update(deltaTime);
 			AutoSpriteSorter.Update(deltaTime);
+
+			#endregion
 		}
 
 		public void OnCollide(Sprite other)

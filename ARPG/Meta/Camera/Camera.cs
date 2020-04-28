@@ -70,8 +70,7 @@ namespace ARPG.Meta.Camera
 
 			targetPosition = Position;
 
-			Origin = Vector2.Zero;
-			//Origin = new Vector2(Game1.ScreenWidth / 2f, Game1.ScreenHeight / 2f);
+			Origin = new Vector2(Game1.ScreenWidth / 2f, Game1.ScreenHeight / 2f);
 			Scale = 4f;
 		}
 
