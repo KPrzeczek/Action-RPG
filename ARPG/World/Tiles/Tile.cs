@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace ARPG.World.Tiles
 {
-	public class Tile
+	public class Tile : ICloneable
 	{
 		private Rectangle rectangle;
 
@@ -57,6 +58,12 @@ namespace ARPG.World.Tiles
 				),
 				Color.White
 			);
+		}
+
+		public object Clone()
+		{
+			Tile deepClone = new Tile(this.atlas, atlas.Width / TileSizeX, atlas.Height / tileSizeY) as Tile;
+			return deepClone;
 		}
 	}
 }

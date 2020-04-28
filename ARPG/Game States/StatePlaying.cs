@@ -27,8 +27,7 @@ namespace ARPG.Game_States
 		public override void LoadContent()
 		{
 			var atlas = Content.Load<Texture2D>("world/forest/tiles/forest_background_tiles");
-
-			tileMap = new TileMap(atlas);
+			tileMap = new TileMap(atlas, new ForestFloorTile(atlas, 3, 1));
 
 			tileMap.Generate(new Vector2[,]
 			{
@@ -57,7 +56,7 @@ namespace ARPG.Game_States
 
 			var oakTree = new OakTree(Content.Load<Texture2D>("world/forest/environment/decor/oak_tree"))
 			{
-				Position = new Vector2(100, 100)
+				Position = new Vector2(200, 100)
 			};
 
 			entities.Add(player);

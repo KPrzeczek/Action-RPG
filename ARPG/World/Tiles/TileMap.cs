@@ -11,6 +11,8 @@ namespace ARPG.World.Tiles
 {
 	public class TileMap
 	{
+		private Tile tilePrefab;
+
 		private Texture2D atlas;
 		private List<Tile> tiles;
 
@@ -22,9 +24,10 @@ namespace ARPG.World.Tiles
 		public int Width { get; private set; }
 		public int Height { get; private set; }
 
-		public TileMap(Texture2D tileAtlas)
+		public TileMap(Texture2D atlas, Tile tile)
 		{
-			atlas = tileAtlas;
+			this.tilePrefab = tile;
+			this.atlas = atlas;
 			this.tiles = new List<Tile>();
 		}
 
@@ -36,12 +39,13 @@ namespace ARPG.World.Tiles
 				{
 					var tileID = map[yy, xx];
 
-					tiles.Add(new ForestFloorTile(atlas, 3, 1)
-					{
-						Position = new Vector2(xx * 16, yy * 16),
-						AtlasPositionX = (int)tileID.X,
-						AtlasPositionY = (int)tileID.Y
-					});
+					Tile tile = tilePrefab.Clone() as Tile;
+
+					tile.Position = new Vector2(xx * 16, yy * 16);
+					tile.AtlasPositionX = (int)tileID.X;
+					tile.AtlasPositionY = (int)tileID.Y;
+
+					tiles.Add(tile);
 				}
 			}
 		}
