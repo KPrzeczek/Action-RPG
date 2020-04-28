@@ -7,6 +7,7 @@ using ARPG.Models.Sprites.Util;
 using System.Collections.Generic;
 using ARPG.Managers.Sprites;
 using System.Linq;
+using ARPG.Entities.Sprites.Util.Drawing;
 
 namespace ARPG.Entities.Sprites
 {
@@ -14,6 +15,8 @@ namespace ARPG.Entities.Sprites
 	{
 		protected Dictionary<string, Animation> animations;
 		protected AnimationManager animationManager;
+
+		protected AutoSpriteSorter autoSpriteSorter;
 
 		protected Texture2D texture;
 
@@ -32,7 +35,8 @@ namespace ARPG.Entities.Sprites
 		/// meaning sprites can sort at different areas without actually affecting the
 		/// actual drawing position of the sprite
 		/// </summary>
-		public int YSortOffset { get; set; }
+
+		public AutoSpriteSorter AutoSpriteSorter => autoSpriteSorter;
 
 		public AnimationManager AnimationManager => animationManager;
 
@@ -147,6 +151,7 @@ namespace ARPG.Entities.Sprites
 			texture = tex;
 			Origin = new Vector2(texture.Width / 2, texture.Height);
 
+			autoSpriteSorter = new AutoSpriteSorter(this);
 			Scale = 1f;
 
 			Colour = Color.White;
@@ -160,6 +165,7 @@ namespace ARPG.Entities.Sprites
 			Animation animation = animations.FirstOrDefault().Value;
 			animationManager = new AnimationManager(animation);
 
+			autoSpriteSorter = new AutoSpriteSorter(this);
 			texture = null;
 			Colour = Color.White;
 			TextureData = new Color[animation.Texture.Width * animation.Texture.Height];

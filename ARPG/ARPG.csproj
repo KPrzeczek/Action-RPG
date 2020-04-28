@@ -45,8 +45,13 @@
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Sprites\ICollidable.cs" />
     <Compile Include="Entities\Sprites\Kinematic\Player\Player.cs" />
+    <Compile Include="Entities\Sprites\Kinematic\Player\States\PlayerIdleState.cs" />
+    <Compile Include="Entities\Sprites\Kinematic\Player\States\PlayerRunningState.cs" />
+    <Compile Include="Entities\Sprites\Kinematic\Player\States\PlayerState.cs" />
+    <Compile Include="Entities\Sprites\Kinematic\Player\States\PlayerWalkState.cs" />
     <Compile Include="Entities\Sprites\Sprite.cs" />
-    <Compile Include="Entities\Sprites\Static\Wall.cs" />
+    <Compile Include="Entities\Sprites\Static\Decor\DecorSprite.cs" />
+    <Compile Include="Entities\Sprites\Static\Decor\Forest\OakTree.cs" />
     <Compile Include="Entities\Sprites\Util\Drawing\AutoSpriteSorter.cs" />
     <Compile Include="Game States\StateBase.cs" />
     <Compile Include="Game States\StatePlaying.cs" />
@@ -59,6 +64,7 @@
     <Compile Include="IComponent.cs" />
     <Compile Include="Managers\Sprites\AnimationManager.cs" />
     <Compile Include="Meta\Camera\Camera.cs" />
+    <Compile Include="Models\Sprites\Player\PlayerStats.cs" />
     <Compile Include="Models\Sprites\Util\Animation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,6 +72,7 @@
     <Compile Include="Util\Collisions\CollisionHelper.cs" />
     <Compile Include="Util\Collisions\Colliders\Collider.cs" />
     <Compile Include="Util\Collisions\Colliders\PolygonCollider.cs" />
+    <Compile Include="Util\Collisions\ISolid.cs" />
     <Compile Include="Util\Debug\DebugConsole.cs" />
     <Compile Include="Util\Debug\DebugTools.cs" />
     <Compile Include="Util\States\IState.cs" />
@@ -131,9 +138,7 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Entities\Sprites\Kinematic\Player\States\" />
     <Folder Include="GUI\Util\" />
-    <Folder Include="Models\Sprites\Player\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

@@ -1,10 +1,10 @@
-﻿using ARPG.Util.Collisions.Colliders;
+﻿using ARPG.Entities;
+using ARPG.Entities.Sprites;
+using ARPG.Util.Collisions.Colliders;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ARPG.Util.Collisions
 {
@@ -12,17 +12,70 @@ namespace ARPG.Util.Collisions
 	 * =====[CREDITS]=====
 	 *	
 	 * SAT Collision Detection:
-	 * https://github.com/OneLoneCoder/olcPixelGameEngine/blob/master/Videos/OneLoneCoder_PGE_PolygonCollisions1.cpp
+	 *  - https://github.com/OneLoneCoder/olcPixelGameEngine/blob/master/Videos/OneLoneCoder_PGE_PolygonCollisions1.cpp
 	 *
 	 * AABB Collision Detection:
-	 * Me
+	 *  - Me
 	 * 
 	 * AABB Collision Resolution:
-	 * https://github.com/KrossX/misc/blob/master/lwings/src/lwings_game.c#L2112
+	 *  - https://github.com/KrossX/misc/blob/master/lwings/src/lwings_game.c#L2112
 	 */
 
 	public static class CollisionHelper
 	{
+		public static void HandleCollisions(List<Entity> entities)
+		{
+			// TODO: Calculate whether to loop over a certain collidableSprite since looping over all is expensive
+
+			var collidableSprites = entities.Where(c => c is Sprite && c is ICollidable);
+
+			foreach(Sprite a in collidableSprites)
+			{
+				foreach(Sprite b in collidableSprites)
+				{
+					if(a == b)
+						continue;
+
+					if(a.Collider != null && b.Collider != null && b is ISolid)
+					{
+						if(a.Collider is PolygonCollider && b.Collider is PolygonCollider)
+						{
+							if(ShapeOverlap_SAT((PolygonCollider)a.Collider, (PolygonCollider)b.Collider))
+							{
+								((ICollidable)a).OnCollide(b);
+							}
+						}
+
+						if(a.Collider is BoxCollider && b.Collider is BoxCollider)
+						{
+							if(ShapeOverlap_AABB_STATIC((BoxCollider)a.Collider, (BoxCollider)b.Collider))
+							{
+								((ICollidable)a).OnCollide(b);
+							}
+						}
+					}
+					else
+					{
+						if(a.Collider is PolygonCollider && b.Collider is PolygonCollider)
+						{
+							if(ShapeOverlap_SAT((PolygonCollider)a.Collider, (PolygonCollider)b.Collider))
+							{
+								((ICollidable)a).OnCollide(b);
+							}
+						}
+
+						if(a.Collider is BoxCollider && b.Collider is BoxCollider)
+						{
+							if(ShapeOverlap_AABB((BoxCollider)a.Collider, (BoxCollider)b.Collider))
+							{
+								((ICollidable)a).OnCollide(b);
+							}
+						}
+					}
+				}
+			}
+		}
+
 		#region Intersection Methods
 		/// <summary>
 		/// Much more complex than AABB collision detection. Works with CONVEX shapes.
@@ -132,6 +185,32 @@ namespace ARPG.Util.Collisions
 
 			return false;
 		}
+
+		/*
+		
+		//Some Collision Resolve Code I Haven't Tried Yet
+		public void resolveCollision(Rectangle rectangle)
+		{
+			// Calculate the resting distance of the two rectangles
+			restingDistance.set(halfW + rectangle.halfW, halfH + rectangle.halfH);
+
+			// Calculate the current distance between the two rectangles
+			currentDistance.set(position.x - rectangle.position.x, position.y - rectangle.position.y);
+
+			// Calculate the overlap between the two rectangles
+			overlap.set(restingDistance.x - Math.abs(currentDistance.x), restingDistance.y - Math.abs(currentDistance.y));
+
+			// Remove the overlap of the axis with the greater overlap
+			overlap.set(overlap.x < overlap.y ? overlap.x : 0, overlap.y < overlap.x ? overlap.y : 0);
+
+			// Reverse the direction of the overlap depending on the positions of the rectangles
+			overlap.set(position.x < rectangle.position.x ? -overlap.x : overlap.x, position.y < rectangle.position.y ? -overlap.y : overlap.y);
+          
+			// Add the overlap to the rectangles position
+			position.add(overlap);
+		} 
+		
+		*/
 
 		/*
 		public static bool ShapeOverlap_SAT_STATIC(PolygonCollider r1, PolygonCollider r2)

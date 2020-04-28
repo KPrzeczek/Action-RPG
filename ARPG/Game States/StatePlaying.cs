@@ -1,27 +1,21 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ARPG.Util.Collisions;
 using ARPG.Entities.Sprites.Kinematic.Player;
 using Microsoft.Xna.Framework;
 using ARPG.Entities.Sprites.Static;
 using ARPG.Entities;
 using ARPG.Util.Debug;
-using ARPG.Entities.Sprites;
-using ARPG.Util.Collisions.Colliders;
-using ARPG.Util;
 using ARPG.Entities.Sprites.Util.Drawing;
+using ARPG.Models.Sprites.Util;
+using ARPG.Entities.Sprites.Static.Decor.Forest;
 
 namespace ARPG.Game_States
 {
 	public class StatePlaying : StateBase
 	{
 		private DebugConsole debugConsole;
-		private AutoSpriteSorter spriteSorter;
 
 		private List<Entity> entities;
 
@@ -33,21 +27,30 @@ namespace ARPG.Game_States
 		{
 			entities = new List<Entity>();
 
-			var player = new Player(Content.Load<Texture2D>("player/player"))
+			var player = new Player(new Dictionary<string, Animation>
+			{
+				{
+					"Walk",
+					new Animation(Content.Load<Texture2D>("player/player"), 9, 1)
+					{
+						IsLooping = true,
+						FrameSpeed = 0.1f
+					}
+				}
+			})
 			{
 				Position = new Vector2(75, 50)
 			};
 
-			var wall = new Wall(Content.Load<Texture2D>("environment/collidables/wall"))
+			var oakTree = new OakTree(Content.Load<Texture2D>("world/forest/environment/decor/oak_tree"))
 			{
-				Position = new Vector2(150, 100)
+				Position = new Vector2(100, 100)
 			};
 
 			entities.Add(player);
-			entities.Add(wall);
+			entities.Add(oakTree);
 
 			debugConsole = new DebugConsole();
-			spriteSorter = new AutoSpriteSorter(entities);
 		}
 
 		public override void UnloadContent()
@@ -62,42 +65,11 @@ namespace ARPG.Game_States
 			}
 
 			debugConsole.Update(deltaTime);
-			spriteSorter.Update(deltaTime);
 		}
 
 		public override void PostUpdate(float deltaTime)
 		{
-			var collidableSprites = entities.Where(c => c is Sprite && c is ICollidable);
-
-			// TODO: Calculate whether to loop over a certain collidableSprite since looping over all is expensive
-
-			foreach(Sprite a in collidableSprites)
-			{
-				foreach(Sprite b in collidableSprites)
-				{
-					if(a == b)
-						continue;
-
-					if(a.Collider != null && b.Collider != null)
-					{
-						if(a.Collider is PolygonCollider && b.Collider is PolygonCollider)
-						{
-							if(CollisionHelper.ShapeOverlap_SAT((PolygonCollider)a.Collider, (PolygonCollider)b.Collider))
-							{
-								((ICollidable)a).OnCollide(b);
-							}
-						}
-
-						if(a.Collider is BoxCollider && b.Collider is BoxCollider)
-						{
-							if(CollisionHelper.ShapeOverlap_AABB_STATIC((BoxCollider)a.Collider, (BoxCollider)b.Collider))
-							{
-								((ICollidable)a).OnCollide(b);
-							}
-						}
-					}
-				}
-			}
+			CollisionHelper.HandleCollisions(entities);
 
 			int entityCount = entities.Count;
 
@@ -108,8 +80,6 @@ namespace ARPG.Game_States
 				{
 					entities.Add(entity.Children[jj]);
 				}
-
-				// ?? (entity.Children = new List<Entity>();) ??
 			}
 
 			for(int ii = 0; ii < entities.Count; ii++)

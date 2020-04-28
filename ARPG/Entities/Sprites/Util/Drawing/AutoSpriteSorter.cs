@@ -1,32 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using ARPG.Entities.Sprites.Static;
+using System;
+using System.Collections.Generic;
 
 namespace ARPG.Entities.Sprites.Util.Drawing
 {
 	public class AutoSpriteSorter
 	{
-		private bool continuous = true;
+		private Sprite parent;
 
-		private List<Entity> entities;
+		private bool once = true;
 
-		public AutoSpriteSorter(List<Entity> entities)
+		public int YOffset;
+		public bool Continuous;
+
+		public AutoSpriteSorter(Sprite parent)
 		{
-			this.entities = entities;
+			this.parent = parent;
 			SortBasedOnY();
 		}
 
 		public void Update(float deltaTime)
 		{
-			if(continuous)
+			if(once)
+			{
+				once = false;
+				SortBasedOnY();
+			}
+
+			if(Continuous)
 				SortBasedOnY();
 		}
 
 		private void SortBasedOnY()
 		{
-			foreach(Sprite sprite in entities)
-			{
-				var bottom = sprite.Rectangle.Bottom + sprite.YSortOffset;
-				sprite.Layer = (int)(bottom);
-			}
+			var bottom = parent.Rectangle.Bottom + YOffset;
+			parent.Layer = (int)(bottom);
 		}
 	}
 }

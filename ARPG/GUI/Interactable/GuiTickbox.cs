@@ -14,8 +14,6 @@ namespace ARPG.GUI.Interactable
 		private MouseState currentMouse;
 		private MouseState previousMouse;
 
-		private bool isHovering;
-
 		private Texture2D enabledTexture;
 		private Texture2D disabledTexture;
 
@@ -63,12 +61,8 @@ namespace ARPG.GUI.Interactable
 				1
 			);
 
-			isHovering = false;
-
 			if(mouseRect.Intersects(Rectangle))
 			{
-				isHovering = true;
-
 				if(currentMouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed)
 				{
 					IsEnabled = !IsEnabled;
