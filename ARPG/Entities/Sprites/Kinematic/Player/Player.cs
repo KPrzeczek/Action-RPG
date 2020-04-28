@@ -1,8 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ARPG.Util.Collisions.Colliders;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
-using ARPG.Util.Collisions;
 
 namespace ARPG.Entities.Sprites.Kinematic.Player
 {
@@ -21,7 +20,6 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 
 		public void OnCollide(Sprite other)
 		{
-			Console.WriteLine("E");
 		}
 	}
 }

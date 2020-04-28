@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace ARPG.Util.Collisions
 {
-	public interface ICollider
+	public interface Collider
 	{
 	}
 }

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace ARPG.Util.Collisions.Colliders
 {
-	public class BoxCollider : ICollider
+	public class BoxCollider : Collider
 	{
 		public Sprite Parent;
 
-		public Rectangle Rectangle { get; set; }
+		public Rectangle CollisionArea { get; set; }
 
 		public Vector2 Position
 		{

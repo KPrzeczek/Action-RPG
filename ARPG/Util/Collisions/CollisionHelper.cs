@@ -9,10 +9,16 @@ using System.Threading.Tasks;
 namespace ARPG.Util.Collisions
 {
 	/*
-	 * THIS WAS NOT MADE BY ME. MOST OF THE CODE COLLISION DETECTING CODE IS HERE:
+	 * =====[CREDITS]=====
+	 *	
+	 * SAT Collision Detection:
 	 * https://github.com/OneLoneCoder/olcPixelGameEngine/blob/master/Videos/OneLoneCoder_PGE_PolygonCollisions1.cpp
+	 *
+	 * AABB Collision Detection:
+	 * Me
 	 * 
-	 * WHILE IT WAS WRITTEN USING C++, IT WAS TRIVIAL TO PORT TO C#
+	 * AABB Collision Resolution:
+	 * https://github.com/KrossX/misc/blob/master/lwings/src/lwings_game.c#L2112
 	 */
 
 	public static class CollisionHelper
@@ -73,8 +79,8 @@ namespace ARPG.Util.Collisions
 
 		public static bool ShapeOverlap_AABB(BoxCollider r1, BoxCollider r2)
 		{
-			var b1 = r1.Rectangle;
-			var b2 = r2.Rectangle;
+			var b1 = r1.CollisionArea;
+			var b2 = r2.CollisionArea;
 
 			if(b1.X < b2.X + b2.Width &&
 			    b1.X + b1.Width > b2.X &&
@@ -93,8 +99,8 @@ namespace ARPG.Util.Collisions
 
 		public static bool ShapeOverlap_AABB_STATIC(BoxCollider r1, BoxCollider r2)
 		{
-			var b1 = r1.Rectangle;
-			var b2 = r2.Rectangle;
+			var b1 = r1.CollisionArea;
+			var b2 = r2.CollisionArea;
 
 			if(ShapeOverlap_AABB(r1, r2))
 			{

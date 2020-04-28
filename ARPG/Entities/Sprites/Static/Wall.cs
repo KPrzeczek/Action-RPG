@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using ARPG.Util.Collisions.Colliders;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ARPG.Entities.Sprites.Static
 {

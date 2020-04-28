@@ -120,17 +120,26 @@ namespace ARPG.Entities.Sprites
 			}
 		}
 
-		public ICollider Collider
-		{ 
+		protected Collider collider;
+		public Collider Collider
+		{
 			get
 			{
-				return new BoxCollider()
+				if(collider != null) return collider;
+				else
 				{
-					Parent = this,
-					Rectangle = this.Rectangle,
-					Position = this.Position
-				};
-			} 
+					return new BoxCollider()
+					{
+						Parent = this,
+						CollisionArea = this.Rectangle,
+						Position = this.Position
+					};
+				}
+			}
+			set
+			{
+				collider = value;
+			}
 		}
 
 		public Sprite(Texture2D tex)

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ARPG.Util.Collisions.Colliders
 {
-	public class PolygonCollider : ICollider
+	public class PolygonCollider : Collider
 	{
 		public List<Vector2> Points;
 		public List<Vector2> Original;

@@ -47,6 +47,7 @@
     <Compile Include="Entities\Sprites\Kinematic\Player\Player.cs" />
     <Compile Include="Entities\Sprites\Sprite.cs" />
     <Compile Include="Entities\Sprites\Static\Wall.cs" />
+    <Compile Include="Entities\Sprites\Util\Drawing\AutoSpriteSorter.cs" />
     <Compile Include="Game States\StateBase.cs" />
     <Compile Include="Game States\StatePlaying.cs" />
     <Compile Include="Game1.cs" />
@@ -63,8 +64,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Collisions\Colliders\BoxCollider.cs" />
     <Compile Include="Util\Collisions\CollisionHelper.cs" />
-    <Compile Include="Util\Collisions\ICollider.cs" />
+    <Compile Include="Util\Collisions\Colliders\Collider.cs" />
     <Compile Include="Util\Collisions\Colliders\PolygonCollider.cs" />
+    <Compile Include="Util\Debug\DebugConsole.cs" />
     <Compile Include="Util\Debug\DebugTools.cs" />
     <Compile Include="Util\States\IState.cs" />
     <Compile Include="Util\States\StateMachine.cs" />
@@ -130,7 +132,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\Sprites\Kinematic\Player\States\" />
-    <Folder Include="Entities\Sprites\Util\Drawing\" />
     <Folder Include="GUI\Util\" />
     <Folder Include="Models\Sprites\Player\" />
   </ItemGroup>

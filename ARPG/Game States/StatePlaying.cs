@@ -13,11 +13,16 @@ using ARPG.Entities;
 using ARPG.Util.Debug;
 using ARPG.Entities.Sprites;
 using ARPG.Util.Collisions.Colliders;
+using ARPG.Util;
+using ARPG.Entities.Sprites.Util.Drawing;
 
 namespace ARPG.Game_States
 {
 	public class StatePlaying : StateBase
 	{
+		private DebugConsole debugConsole;
+		private AutoSpriteSorter spriteSorter;
+
 		private List<Entity> entities;
 
 		public StatePlaying(Game1 game, ContentManager content) : base(game, content)
@@ -40,6 +45,9 @@ namespace ARPG.Game_States
 
 			entities.Add(player);
 			entities.Add(wall);
+
+			debugConsole = new DebugConsole();
+			spriteSorter = new AutoSpriteSorter(entities);
 		}
 
 		public override void UnloadContent()
@@ -52,6 +60,9 @@ namespace ARPG.Game_States
 			{
 				entity.Update(deltaTime);
 			}
+
+			debugConsole.Update(deltaTime);
+			spriteSorter.Update(deltaTime);
 		}
 
 		public override void PostUpdate(float deltaTime)
@@ -67,19 +78,22 @@ namespace ARPG.Game_States
 					if(a == b)
 						continue;
 
-					if(a.Collider is PolygonCollider && b.Collider is PolygonCollider)
+					if(a.Collider != null && b.Collider != null)
 					{
-						if(CollisionHelper.ShapeOverlap_SAT((PolygonCollider)a.Collider, (PolygonCollider)b.Collider))
+						if(a.Collider is PolygonCollider && b.Collider is PolygonCollider)
 						{
-							((ICollidable)a).OnCollide(b);
+							if(CollisionHelper.ShapeOverlap_SAT((PolygonCollider)a.Collider, (PolygonCollider)b.Collider))
+							{
+								((ICollidable)a).OnCollide(b);
+							}
 						}
-					}
 
-					if(a.Collider is BoxCollider && b.Collider is BoxCollider)
-					{
-						if(CollisionHelper.ShapeOverlap_AABB_STATIC((BoxCollider)a.Collider, (BoxCollider)b.Collider))
+						if(a.Collider is BoxCollider && b.Collider is BoxCollider)
 						{
-							((ICollidable)a).OnCollide(b);
+							if(CollisionHelper.ShapeOverlap_AABB_STATIC((BoxCollider)a.Collider, (BoxCollider)b.Collider))
+							{
+								((ICollidable)a).OnCollide(b);
+							}
 						}
 					}
 				}
@@ -117,6 +131,7 @@ namespace ARPG.Game_States
 
 		public override void DrawGUI(float deltaTime, SpriteBatch spriteBatch)
 		{
+			debugConsole.Draw(deltaTime, spriteBatch);
 		}
 	}
 }
