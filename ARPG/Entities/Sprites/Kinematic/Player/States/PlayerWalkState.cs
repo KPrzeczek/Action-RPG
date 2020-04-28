@@ -25,7 +25,7 @@ namespace ARPG.Entities.Sprites.Kinematic.Player.States
 
 		public override void Update(float deltaTime)
 		{
-			if(Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+			if(Keyboard.GetState().IsKeyDown(player.Input.Run))
 			{
 				player.RequestState(new PlayerRunningState(player));
 			}

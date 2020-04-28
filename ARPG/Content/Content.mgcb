@@ -49,3 +49,15 @@
 /processorParam:TextureFormat=Color
 /build:world/forest/environment/decor/oak_tree.png
 
+#begin world/forest/tiles/forest_background_tiles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:world/forest/tiles/forest_background_tiles.png
+

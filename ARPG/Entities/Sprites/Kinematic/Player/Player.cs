@@ -22,12 +22,23 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 		private Vector2 velocity;
 		private Vector2 movement;
 
+		public PlayerInput Input { get; set; }
 		public PlayerStats Stats { get; set; }
 
 		public Player(Dictionary<string, Animation> anims) : base(anims)
 		{
 			stateMachine = new StateMachine(new PlayerIdleState(this));
+
 			Stats = new PlayerStats();
+			Input = new PlayerInput()
+			{
+				MoveUp = Keys.W,
+				MoveDown = Keys.S,
+				MoveLeft = Keys.A,
+				MoveRight = Keys.D,
+
+				Run = Keys.LeftShift
+			};
 
 			AutoSpriteSorter.Continuous = true;
 		}
@@ -43,14 +54,14 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 
 			bool isKeyDown(Keys k) => Keyboard.GetState().IsKeyDown(k);
 
-			if(isKeyDown(Keys.W))
+			if(isKeyDown(Input.MoveUp))
 				inputY -= 1;
-			if(isKeyDown(Keys.S))
+			if(isKeyDown(Input.MoveDown))
 				inputY += 1;
 
-			if(isKeyDown(Keys.A))
+			if(isKeyDown(Input.MoveLeft))
 				inputX -= 1;
-			if(isKeyDown(Keys.D))
+			if(isKeyDown(Input.MoveRight))
 				inputX += 1;
 
 			movement.X = inputX;

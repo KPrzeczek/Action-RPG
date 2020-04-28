@@ -64,6 +64,7 @@
     <Compile Include="IComponent.cs" />
     <Compile Include="Managers\Sprites\AnimationManager.cs" />
     <Compile Include="Meta\Camera\Camera.cs" />
+    <Compile Include="Models\Sprites\Player\PlayerInput.cs" />
     <Compile Include="Models\Sprites\Player\PlayerStats.cs" />
     <Compile Include="Models\Sprites\Util\Animation.cs" />
     <Compile Include="Program.cs" />
@@ -77,6 +78,9 @@
     <Compile Include="Util\Debug\DebugTools.cs" />
     <Compile Include="Util\States\IState.cs" />
     <Compile Include="Util\States\StateMachine.cs" />
+    <Compile Include="World\Tiles\Forest\ForestFloorTile.cs" />
+    <Compile Include="World\Tiles\Tile.cs" />
+    <Compile Include="World\Tiles\TileMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

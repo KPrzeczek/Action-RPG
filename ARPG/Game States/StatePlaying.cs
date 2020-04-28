@@ -4,19 +4,20 @@ using System.Collections.Generic;
 using ARPG.Util.Collisions;
 using ARPG.Entities.Sprites.Kinematic.Player;
 using Microsoft.Xna.Framework;
-using ARPG.Entities.Sprites.Static;
 using ARPG.Entities;
 using ARPG.Util.Debug;
-using ARPG.Entities.Sprites.Util.Drawing;
 using ARPG.Models.Sprites.Util;
 using ARPG.Entities.Sprites.Static.Decor.Forest;
+using ARPG.World.Tiles;
+using ARPG.World.Tiles.Forest;
 
 namespace ARPG.Game_States
 {
 	public class StatePlaying : StateBase
 	{
-		private DebugConsole debugConsole;
+		private TileMap tileMap;
 
+		private DebugConsole debugConsole;
 		private List<Entity> entities;
 
 		public StatePlaying(Game1 game, ContentManager content) : base(game, content)
@@ -25,6 +26,18 @@ namespace ARPG.Game_States
 
 		public override void LoadContent()
 		{
+			var atlas = Content.Load<Texture2D>("world/forest/tiles/forest_background_tiles");
+
+			tileMap = new TileMap(atlas);
+
+			tileMap.Generate(new Vector2[,]
+			{
+				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0) },
+				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0) },
+				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(1, 0), new Vector2(0, 0) },
+				{ new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(1, 0) }
+			});
+
 			entities = new List<Entity>();
 
 			var player = new Player(new Dictionary<string, Animation>
@@ -93,6 +106,8 @@ namespace ARPG.Game_States
 
 		public override void Draw(float deltaTime, SpriteBatch spriteBatch)
 		{
+			tileMap.Draw(spriteBatch);
+
 			foreach(var entity in entities)
 			{
 				entity.Draw(deltaTime, spriteBatch);
