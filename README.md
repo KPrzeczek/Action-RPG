@@ -5,10 +5,10 @@ FYI - The reason I don't have seperate '/Engine/' and '/Game/' folders is becaus
   
 Date that work on this began: 25th April 2020  
 
-## Public Trello Board
-https://trello.com/b/u0xESYEC/arpg
-
-# Inspiration
+## Inspiration
 * CrossCode  
 * Terraria  
 * Stardew Valley  
+  
+### Public Trello Board
+https://trello.com/b/u0xESYEC/arpg
