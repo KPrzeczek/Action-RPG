@@ -8,6 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ARPG.GUI.Static;
 
+/*
+ * I want to admit that yes this class is a mess, but hey, it's for debug purposes.
+ * I might keep it though since it might be fun to mess around with...
+ */
+
 namespace ARPG.Util.Debug
 {
 	public class DebugConsole : IComponent
@@ -20,16 +25,20 @@ namespace ARPG.Util.Debug
 		private bool canType = true;
 		private bool canEnable = true;
 
+		private delegate void CommandFunction(params string[] args);
+
 		private Rectangle rectangle;
-		private Dictionary<string, Func<bool>> commands;
+		private Dictionary<string, CommandFunction> commands;
 
 		public bool Enabled = false;
 
 		#region Console Variables
 
 		// TODO: Not sure if this is the way to go, so do fix this later
+		// TODO: Support for arguments, eg: drawdebuglines true
 
-		public bool DrawDebugLines = false;
+		public bool NoClip = false;
+		public bool ShowDebugLines = false;
 
 		#endregion
 
@@ -39,10 +48,17 @@ namespace ARPG.Util.Debug
 		{
 			#region Commands
 
-			commands = new Dictionary<string, Func<bool>>();
-			commands["drawdebuglines"] = drawdebuglines;
+			commands = new Dictionary<string, CommandFunction>();
+
+			commands.Add("clear", clear);
+			commands.Add("help", help);
+
+			commands.Add("showdebuglines", showDebugLines);
+			commands.Add("noclip", noClip);
 
 			#endregion
+
+			#region Display
 
 			inputText = new GuiText(font)
 			{
@@ -65,6 +81,8 @@ namespace ARPG.Util.Debug
 				Game1.ScreenWidth,
 				(Game1.ScreenHeight / 4) * 3
 			);
+
+			#endregion
 		}
 
 		public void Update(float deltaTime)
@@ -120,6 +138,46 @@ namespace ARPG.Util.Debug
 						else if(keys[ii] == Keys.OemPeriod)
 						{
 							key2str += ".";
+						}
+						else if(keys[ii] == Keys.D1)
+						{
+							key2str += "1";
+						}
+						else if(keys[ii] == Keys.D2)
+						{
+							key2str += "2";
+						}
+						else if(keys[ii] == Keys.D3)
+						{
+							key2str += "3";
+						}
+						else if(keys[ii] == Keys.D4)
+						{
+							key2str += "4";
+						}
+						else if(keys[ii] == Keys.D5)
+						{
+							key2str += "5";
+						}
+						else if(keys[ii] == Keys.D6)
+						{
+							key2str += "6";
+						}
+						else if(keys[ii] == Keys.D7)
+						{
+							key2str += "7";
+						}
+						else if(keys[ii] == Keys.D8)
+						{
+							key2str += "8";
+						}
+						else if(keys[ii] == Keys.D9)
+						{
+							key2str += "9";
+						}
+						else if(keys[ii] == Keys.D0)
+						{
+							key2str += "0";
 						}
 						else if(keys[ii] == Keys.Space)
 						{
@@ -177,11 +235,36 @@ namespace ARPG.Util.Debug
 
 		#region Function Handling
 
-		void ProcessCommand(string command)
+		void ProcessCommand(string rawCommand)
 		{
+			char[] delimiters = new char[] { ' ', '\r', '\n' };
+			int wordAmount = rawCommand.Split(delimiters, StringSplitOptions.RemoveEmptyEntries).Length;
+
+			string[] words = rawCommand.Split(' ');
+			string command = rawCommand.Split(' ')[0];
+
+			List<string> arguments = new List<string>();
+
+			// Add arguments
+			foreach(string word in words)
+			{
+				if(!(word == words[0]))
+				{
+					arguments.Add(word);
+				}
+			}
+
+			// If no arguments were given, automatically set argument to false
+			if(words.Length <= 1)
+			{
+				arguments.Add("false");
+			}
+
+			// Execute Command
 			if(commands.ContainsKey(command))
 			{
-				commands[command].Invoke();
+				string[] args = arguments.ToArray();
+				commands[command].Invoke(args);
 			}
 			else
 			{
@@ -189,13 +272,34 @@ namespace ARPG.Util.Debug
 			}
 		}
 
-		#region Functions
+		#region Commands
 
-		private bool drawdebuglines()
+		private void clear(params string[] args)
 		{
-			DrawDebugLines = !DrawDebugLines;
-			outputText.Text += "DrawDebugLines set to " + DrawDebugLines + "\n";
-			return false;
+			outputText.Text = "";
+		}
+
+		private void help(params string[] args)
+		{
+			clear();
+
+			outputText.Text =
+				"help - print all commands available\n" +
+				"clear - clear output window\n" +
+				"noclip - turn off collisions\n" +
+				"showdebuglines - enable debug lines\n";
+		}
+
+		private void showDebugLines(params string[] args)
+		{
+			ShowDebugLines = args[0] == "true" ? true : false;
+			outputText.Text += "DrawDebugLines set to " + ShowDebugLines + "\n";
+		}
+
+		private void noClip(params string[] args)
+		{
+			NoClip = args[0] == "true" ? true : false;
+			outputText.Text += "NoClip set to " + NoClip + "\n";
 		}
 
 		#endregion

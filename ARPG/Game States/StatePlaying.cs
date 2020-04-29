@@ -89,7 +89,8 @@ namespace ARPG.Game_States
 
 		public override void PostUpdate(float deltaTime)
 		{
-			CollisionHelper.HandleCollisions(entities);
+			if(debugConsole.NoClip == false)
+				CollisionHelper.HandleCollisions(entities);
 
 			int entityCount = entities.Count;
 
@@ -120,7 +121,7 @@ namespace ARPG.Game_States
 				entity.Draw(deltaTime, spriteBatch);
 			}
 
-			if(debugConsole.DrawDebugLines)
+			if(debugConsole.ShowDebugLines)
 			{
 				foreach(Sprite sprite in entities)
 				{

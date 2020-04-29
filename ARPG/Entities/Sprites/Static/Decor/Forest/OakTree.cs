@@ -8,7 +8,7 @@ using ARPG.Util.Collisions;
 
 namespace ARPG.Entities.Sprites.Static.Decor.Forest
 {
-	public class OakTree : DecorSprite
+	public class OakTree : DecorSprite, ISolid
 	{
 		public OakTree(Texture2D tex) : base(tex)
 		{
