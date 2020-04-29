@@ -80,7 +80,7 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 
 			#endregion
 
-			velocity = movement * currentSpeed * deltaTime;
+			velocity = movement * (currentSpeed * Stats.SpeedModifier) * deltaTime;
 
 			#region Diagonal Speed
 
@@ -107,14 +107,14 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 
 			if(movement.X > 0)
 			{
-				FlipHorizontal = true;
+				FlipHorizontal = false;
 			}
 			else if(movement.X < 0)
 			{
-				FlipHorizontal = false;
+				FlipHorizontal = true;
 			}
 
-			Position += velocity * Stats.SpeedModifier;
+			Position += velocity;
 
 			#region Misc
 

@@ -10,6 +10,8 @@ using ARPG.Models.Sprites.Util;
 using ARPG.Entities.Sprites.Static.Decor.Forest;
 using ARPG.World.Tiles;
 using ARPG.World.Tiles.Forest;
+using ARPG.Entities.Sprites;
+using ARPG.Util.Collisions.Colliders;
 
 namespace ARPG.Game_States
 {
@@ -31,10 +33,13 @@ namespace ARPG.Game_States
 
 			tileMap.Generate(new Vector2[,]
 			{
-				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0) },
-				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0) },
-				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(1, 0), new Vector2(0, 0) },
-				{ new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(1, 0) }
+				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0) },
+				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0) },
+				{ new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(1, 0), new Vector2(0, 0) },
+				{ new Vector2(1, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(1, 0) },
+				{ new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(2, 0), new Vector2(1, 0), new Vector2(0, 0) },
+				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0) },
+				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0) }
 			});
 
 			entities = new List<Entity>();
@@ -43,7 +48,7 @@ namespace ARPG.Game_States
 			{
 				{
 					"Walk",
-					new Animation(Content.Load<Texture2D>("world/forest/environment/decor/bush"), 1, 1)
+					new Animation(Content.Load<Texture2D>("player/player"), 9, 1)
 					{
 						IsLooping = true,
 						FrameSpeed = 0.1f
@@ -62,7 +67,7 @@ namespace ARPG.Game_States
 			entities.Add(player);
 			entities.Add(oakTree);
 
-			debugConsole = new DebugConsole();
+			debugConsole = new DebugConsole(Content.Load<SpriteFont>("fonts/general/arial"));
 		}
 
 		public override void UnloadContent()
@@ -71,12 +76,15 @@ namespace ARPG.Game_States
 
 		public override void Update(float deltaTime)
 		{
+			debugConsole.Update(deltaTime);
+
+			if(debugConsole.Enabled)
+				return;
+
 			foreach(var entity in entities)
 			{
 				entity.Update(deltaTime);
 			}
-
-			debugConsole.Update(deltaTime);
 		}
 
 		public override void PostUpdate(float deltaTime)
@@ -110,6 +118,22 @@ namespace ARPG.Game_States
 			foreach(var entity in entities)
 			{
 				entity.Draw(deltaTime, spriteBatch);
+			}
+
+			if(debugConsole.DrawDebugLines)
+			{
+				foreach(Sprite sprite in entities)
+				{
+					if(sprite.Collider is BoxCollider)
+					{
+						var r = ((BoxCollider)sprite.Collider).CollisionArea;
+
+						DebugTools.DrawLine(spriteBatch, new Vector2(r.X, r.Y), new Vector2(r.X + r.Width, r.Y), Color.White, 1);
+						DebugTools.DrawLine(spriteBatch, new Vector2(r.X + r.Width, r.Y), new Vector2(r.X + r.Width, r.Y + r.Height), Color.White, 1);
+						DebugTools.DrawLine(spriteBatch, new Vector2(r.X + r.Width, r.Y + r.Height), new Vector2(r.X, r.Y + r.Height), Color.White, 1);
+						DebugTools.DrawLine(spriteBatch, new Vector2(r.X, r.Y + r.Height), new Vector2(r.X, r.Y), Color.White, 1);
+					}
+				}
 			}
 		}
 

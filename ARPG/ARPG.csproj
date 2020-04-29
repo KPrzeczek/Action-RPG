@@ -58,6 +58,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="GUI\IGuiComponent.cs" />
     <Compile Include="GUI\Interactable\GuiButton.cs" />
+    <Compile Include="GUI\Interactable\GuiTextbox.cs" />
     <Compile Include="GUI\Interactable\GuiTickbox.cs" />
     <Compile Include="GUI\Interactable\GuiWidget.cs" />
     <Compile Include="GUI\Static\GuiText.cs" />
