@@ -118,10 +118,10 @@ namespace ARPG.Entities.Sprites
 				if(texture != null)
 				{
 					return new Rectangle(
-						(int)Position.X - ((int)Origin.X * (int)Scale),
-						(int)Position.Y - ((int)Origin.Y * (int)Scale),
-						(int)texture.Width * (int)Scale,
-						(int)texture.Height * (int)Scale
+						(int)Position.X - (int)(Origin.X * Scale),
+						(int)Position.Y - (int)(Origin.Y * Scale),
+						(int)(texture.Width * Scale),
+						(int)(texture.Height * Scale)
 					);
 				}
 
@@ -130,10 +130,10 @@ namespace ARPG.Entities.Sprites
 					var anim = animations.FirstOrDefault().Value;
 
 					return new Rectangle(
-						(int)Position.X - ((int)Origin.X * (int)animationManager.Scale),
-						(int)Position.Y - ((int)Origin.Y * (int)animationManager.Scale),
-						(int)anim.FrameWidth * (int)animationManager.Scale,
-						(int)anim.FrameHeight * (int)animationManager.Scale
+						(int)Position.X - (int)(Origin.X * animationManager.Scale),
+						(int)Position.Y - (int)(Origin.Y * animationManager.Scale),
+						(int)(anim.FrameWidth * animationManager.Scale),
+						(int)(anim.FrameHeight * animationManager.Scale)
 					);
 				}
 
