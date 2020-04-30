@@ -12,7 +12,7 @@ namespace ARPG.Util.Collisions.Colliders
 	{
 		public Sprite Parent;
 
-		public Rectangle CollisionArea { get; set; }
+		public Rectangle Rectangle { get; set; }
 
 		public Vector2 Position
 		{

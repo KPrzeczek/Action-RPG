@@ -6,15 +6,16 @@ using System.Collections.Generic;
 using ARPG.Util.States;
 using ARPG.Entities.Sprites.Kinematic.Player.States;
 using ARPG.Models.Sprites.Player;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace ARPG.Entities.Sprites.Kinematic.Player
 {
-	public class Player : Sprite, ICollidable
+	public class Player : Sprite, ICollidable, IStateManaged
 	{
 		#region Fields
 
 		private StateMachine stateMachine;
+
+		#region Movement
 
 		private bool isMoving;
 
@@ -24,6 +25,8 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 
 		private Vector2 velocity;
 		private Vector2 movement;
+
+		#endregion
 
 		#endregion
 
@@ -54,6 +57,10 @@ namespace ARPG.Entities.Sprites.Kinematic.Player
 			};
 
 			AutoSpriteSorter.Continuous = true;
+
+			colliderOffsetY = 18;
+			colliderOffsetWidth = -1;
+			colliderOffsetHeight = -17;
 		}
 
 		public override void Update(float deltaTime)

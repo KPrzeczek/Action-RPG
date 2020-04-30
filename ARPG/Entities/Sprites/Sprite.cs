@@ -141,24 +141,25 @@ namespace ARPG.Entities.Sprites
 			}
 		}
 
-		protected Collider collider;
+		protected float colliderOffsetX;
+		protected float colliderOffsetY;
+		protected float colliderOffsetWidth;
+		protected float colliderOffsetHeight;
+
 		public Collider Collider
 		{
 			get
 			{
-				if(collider != null) return collider;
-				else
+				return new BoxCollider()
 				{
-					return new BoxCollider()
-					{
-						Parent = this,
-						CollisionArea = this.Rectangle
-					};
-				}
-			}
-			set
-			{
-				collider = value;
+					Parent = this,
+					Rectangle = new Rectangle(
+						(int)(Rectangle.X + colliderOffsetX),
+						(int)(Rectangle.Y + colliderOffsetY),
+						(int)(Rectangle.Width + colliderOffsetWidth),
+						(int)(Rectangle.Height + colliderOffsetHeight)
+					)
+				};
 			}
 		}
 

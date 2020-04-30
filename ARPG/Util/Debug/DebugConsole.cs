@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ARPG.GUI.Static;
 
 /*
  * I want to admit that yes this class is a complete and utter mess on fire, but hey, it's for 
  * debug purposes. I might keep it though since it might be fun to mess around with...
+ * 
+ * Strangely enough, it's probably the most nice-looking thing in this entire project!
  */
 
 namespace ARPG.Util.Debug
@@ -43,7 +43,7 @@ namespace ARPG.Util.Debug
 		// TODO: Support for arguments, eg: drawdebuglines true
 
 		public bool NoClip = false;
-		public bool ShowDebugLines = false;
+		public bool ShowDebugLines = true;
 
 		#endregion
 
@@ -110,12 +110,16 @@ namespace ARPG.Util.Debug
 			if(Enabled)
 			{
 				rectangle.Y = (int)MathHelper.Lerp(rectangle.Y, 0f, 0.2f);
+
 				inputText.Position = new Vector2(inputText.Position.X, (int)MathHelper.Lerp(inputText.Position.Y, (Game1.ScreenHeight / 4) * 3, 0.2f));
+				outputText.Position = new Vector2(inputText.Position.X, (inputText.Position.Y - (Game1.ScreenHeight / 4) * 3) + 10);
 			}
 			else
 			{
 				rectangle.Y = (int)MathHelper.Lerp(rectangle.Y, -Game1.ScreenWidth / 2f, 0.2f);
+
 				inputText.Position = new Vector2(inputText.Position.X, (int)MathHelper.Lerp(inputText.Position.Y, 0f, 0.2f));
+				outputText.Position = new Vector2(inputText.Position.X, (inputText.Position.Y - (Game1.ScreenHeight / 4) * 3) + 10);
 			}
 
 			#endregion
@@ -303,7 +307,7 @@ namespace ARPG.Util.Debug
 				float lenX = font.MeasureString(inputText.Text).X;
 				float lenY = font.MeasureString(inputText.Text).Y;
 
-				linePos.X = MathHelper.Lerp(linePos.X, inputText.Position.X + lenX + 5, 0.5f);
+				linePos.X = MathHelper.Lerp(linePos.X, inputText.Position.X + lenX + 2.5f, 0.5f);
 
 				DebugTools.DrawLine(
 					spriteBatch,
@@ -317,9 +321,14 @@ namespace ARPG.Util.Debug
 
 		#endregion
 
+		public void WriteToConsole(string text)
+		{
+			outputText.Text += text;
+		}
+
 		#region Command Handling
 
-		void ProcessCommand(string rawCommand)
+		private void ProcessCommand(string rawCommand)
 		{
 			char[] delimiters = new char[] { ' ', '\r', '\n' };
 			int wordAmount = rawCommand.Split(delimiters, StringSplitOptions.RemoveEmptyEntries).Length;
@@ -338,10 +347,10 @@ namespace ARPG.Util.Debug
 				}
 			}
 
-			// If no arguments were given, automatically set argument to false
+			// If no arguments were given, automatically set argument to nothing
 			if(words.Length <= 1)
 			{
-				arguments.Add("false");
+				arguments.Add("");
 			}
 
 			// Execute Command
@@ -376,13 +385,21 @@ namespace ARPG.Util.Debug
 
 		private void showDebugLines(params string[] args)
 		{
-			ShowDebugLines = args[0] == "true" ? true : false;
+			if(args[0] == "")
+				ShowDebugLines = !ShowDebugLines;
+			else
+				ShowDebugLines = args[0] == "true" ? true : false;
+
 			outputText.Text += "showdebuglines set to " + ShowDebugLines + "\n";
 		}
 
 		private void noClip(params string[] args)
 		{
-			NoClip = args[0] == "true" ? true : false;
+			if(args[0] == "")
+				NoClip = !NoClip;
+			else
+				NoClip = args[0] == "true" ? true : false;
+
 			outputText.Text += "noclip set to " + NoClip + "\n";
 		}
 

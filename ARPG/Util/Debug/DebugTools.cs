@@ -23,7 +23,7 @@ namespace ARPG.Util.Debug
 			return _texture;
 		}
 
-		public static void DrawRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color)
+		public static void DrawRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, float layer = 999f)
 		{
 			Texture2D rect = new Texture2D(spriteBatch.GraphicsDevice, rectangle.Width, rectangle.Height);
 			Color[] data = new Color[rectangle.Width * rectangle.Height];
@@ -31,7 +31,8 @@ namespace ARPG.Util.Debug
 				data[i] = color;
 			rect.SetData(data);
 			Vector2 coor = new Vector2(rectangle.X, rectangle.Y);
-			spriteBatch.Draw(rect, coor, Color.White);
+			//spriteBatch.Draw(rect, coor, Color.White);
+			spriteBatch.Draw(rect, coor, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, layer);
 		}
 
 		public static void DrawLine(SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, float thickness = 1f)
@@ -41,11 +42,11 @@ namespace ARPG.Util.Debug
 			DrawLine(spriteBatch, point1, distance, angle, color, thickness);
 		}
 
-		public static void DrawLine(SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color, float thickness = 1f)
+		public static void DrawLine(SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color, float thickness = 1f, float layer = 999f)
 		{
 			var origin = new Vector2(0f, 0.5f);
 			var scale = new Vector2(length, thickness);
-			spriteBatch.Draw(GetTexture(spriteBatch), point, null, color, angle, origin, scale, SpriteEffects.None, 1f);
+			spriteBatch.Draw(GetTexture(spriteBatch), point, null, color, angle, origin, scale, SpriteEffects.None, layer);
 		}
 	}
 }

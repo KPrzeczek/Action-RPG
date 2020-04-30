@@ -19,27 +19,32 @@ namespace ARPG.GUI.Interactable
 
 		private bool isHovering;
 
-		private Texture2D texture;
-
 		#endregion Fields
+
+		protected Texture2D texture;
+		protected Texture2D hoverTexture;
+		protected Texture2D pressTexture;
 
 		#region Properties
 
-		public event EventHandler Click;
+		public float Scale { get; set; } = 1f;
+
+		public event EventHandler OnClick;
 		public bool Clicked { get; private set; }
+		public bool Pressed { get; private set; }
 
 		public Color DefaultColour { get; set; } = Color.White;
-		public Color HoverColour { get; set; } = Color.Gray;
+		public Color HoverColour { get; set; } = Color.White;
 
 		public new Rectangle Rectangle
 		{
 			get
 			{
 				return new Rectangle(
-					(int)Position.X - (int)Origin.X,
-					(int)Position.Y - (int)Origin.Y,
-					(int)texture.Width,
-					(int)texture.Height
+					(int)Position.X - (int)(Origin.X * Scale),
+					(int)Position.Y - (int)(Origin.Y * Scale),
+					(int)(texture.Width * Scale),
+					(int)(texture.Height * Scale)
 				);
 			}
 		}
@@ -50,9 +55,12 @@ namespace ARPG.GUI.Interactable
 
 		#region Methods
 
-		public GuiButton(Texture2D tex, GuiText text)
+		public GuiButton(Texture2D tex, Texture2D hoverTex = null, Texture2D pressTex = null, GuiText text = null)
 		{
 			this.texture = tex;
+			this.hoverTexture = hoverTex;
+			this.pressTexture = pressTex;
+
 			this.Text = text;
 
 			Origin = new Vector2((int)texture.Width / 2, (int)texture.Height / 2);
@@ -71,13 +79,22 @@ namespace ARPG.GUI.Interactable
 
 			isHovering = false;
 
+			Clicked = false;
+			Pressed = false;
+
 			if(mouseRect.Intersects(Rectangle))
 			{
 				isHovering = true;
 
+				if(currentMouse.LeftButton == ButtonState.Pressed)
+				{
+					Pressed = true;
+				}
+
 				if(currentMouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed)
 				{
-					Click?.Invoke(this, new EventArgs());
+					Clicked = true;
+					OnClick?.Invoke(this, new EventArgs());
 				}
 			}
 
@@ -87,22 +104,41 @@ namespace ARPG.GUI.Interactable
 		public override void Draw(float deltaTime, SpriteBatch spriteBatch)
 		{
 			var colour = DefaultColour;
+			var tex = texture;
 
 			if(isHovering)
+			{
 				colour = HoverColour;
 
-			spriteBatch.Draw(texture, Rectangle, colour);
-
-			if(!string.IsNullOrEmpty(Text.Text))
-			{
-				Text.Origin = new Vector2(
-					Text.Font.MeasureString(Text.Text).X / 2f,
-					Text.Font.MeasureString(Text.Text).Y / 2f
-				);
+				if(hoverTexture != null)
+				{
+					tex = hoverTexture;
+				}
 			}
 
-			Text.Position = Position;
-			Text.Draw(deltaTime, spriteBatch);
+			if(Pressed)
+			{
+				if(pressTexture != null)
+				{
+					tex = pressTexture;
+				}
+			}
+
+			spriteBatch.Draw(tex, Position, null, colour, 0f, Origin, Scale, SpriteEffects.None, 0.9f);
+
+			if(Text != null)
+			{
+				if(!string.IsNullOrEmpty(Text.Text))
+				{
+					Text.Origin = new Vector2(
+						Text.Font.MeasureString(Text.Text).X / 2f,
+						Text.Font.MeasureString(Text.Text).Y / 2f
+					);
+				}
+
+				Text.Position = Position;
+				Text.Draw(deltaTime, spriteBatch);
+			}
 		}
 
 		#endregion Methods

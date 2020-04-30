@@ -13,16 +13,19 @@ using ARPG.World.Tiles.Forest;
 using ARPG.Entities.Sprites;
 using ARPG.Util.Collisions.Colliders;
 using ARPG.Entities.Sprites.Items;
-using ARPG.Entities.Sprites.Items.Food;
+using ARPG.Entities.Sprites.Items.Gui;
 
 namespace ARPG.Game_States
 {
 	public class StatePlaying : StateBase
 	{
 		private TileMap tileMap;
-
-		private DebugConsole debugConsole;
 		private List<Entity> entities;
+
+		private Inventory inventory;
+		private InventoryUI inventoryUI;
+
+		public static DebugConsole DebugConsole;
 
 		public StatePlaying(Game1 game, ContentManager content) : base(game, content)
 		{
@@ -30,7 +33,19 @@ namespace ARPG.Game_States
 
 		public override void LoadContent()
 		{
-			debugConsole = new DebugConsole(Content.Load<SpriteFont>("fonts/general/ubuntu_mono"));
+			var slotPrefab = new InventorySlot(
+				Content.Load<Texture2D>("inventory/gui/slot"),
+				Content.Load<Texture2D>("inventory/gui/slot_hover"),
+				Content.Load<Texture2D>("inventory/gui/slot_pressed")
+			)
+			{
+				Position = new Vector2(100, 100)
+			};
+
+			inventory = new Inventory();
+			inventoryUI = new InventoryUI(inventory, slotPrefab);
+
+			DebugConsole = new DebugConsole(Content.Load<SpriteFont>("fonts/general/ubuntu_mono"));
 
 			var atlas = Content.Load<Texture2D>("world/forest/tiles/forest_background_tiles");
 			tileMap = new TileMap(atlas, new ForestFloorTile(atlas, 3, 1));
@@ -44,6 +59,10 @@ namespace ARPG.Game_States
 				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0) },
 				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0) }
 			});
+
+			#region Entities
+
+			#region Kinematic#
 
 			entities = new List<Entity>();
 
@@ -69,10 +88,13 @@ namespace ARPG.Game_States
 			entities.Add(player);
 			entities.Add(oakTree);
 
+			#endregion
+
 			#region Items
 
 			ItemContainer.GenerateItemDefinitions(Content);
-			entities.Add(ItemContainer.GetItem(0));
+
+			#endregion
 
 			#endregion
 		}
@@ -83,20 +105,22 @@ namespace ARPG.Game_States
 
 		public override void Update(float deltaTime)
 		{
-			debugConsole.Update(deltaTime);
+			DebugConsole.Update(deltaTime);
 
-			if(debugConsole.Enabled)
+			if(DebugConsole.Enabled)
 				return;
 
 			foreach(var entity in entities)
 			{
 				entity.Update(deltaTime);
 			}
+
+			inventoryUI.Update(deltaTime);
 		}
 
 		public override void PostUpdate(float deltaTime)
 		{
-			if(debugConsole.NoClip == false)
+			if(DebugConsole.NoClip == false)
 				CollisionHelper.HandleCollisions(entities);
 
 			int entityCount = entities.Count;
@@ -128,13 +152,13 @@ namespace ARPG.Game_States
 				entity.Draw(deltaTime, spriteBatch);
 			}
 
-			if(debugConsole.ShowDebugLines)
+			if(DebugConsole.ShowDebugLines)
 			{
 				foreach(Sprite sprite in entities)
 				{
 					if(sprite.Collider is BoxCollider)
 					{
-						var r = ((BoxCollider)sprite.Collider).CollisionArea;
+						var r = ((BoxCollider)sprite.Collider).Rectangle;
 
 						// Draw Outline
 						DebugTools.DrawLine(spriteBatch, new Vector2(r.X, r.Y), new Vector2(r.X + r.Width, r.Y), Color.White, 1);
@@ -148,7 +172,8 @@ namespace ARPG.Game_States
 
 		public override void DrawGUI(float deltaTime, SpriteBatch spriteBatch)
 		{
-			debugConsole.Draw(deltaTime, spriteBatch);
+			DebugConsole.Draw(deltaTime, spriteBatch);
+			inventoryUI.Draw(deltaTime, spriteBatch);
 		}
 	}
 }

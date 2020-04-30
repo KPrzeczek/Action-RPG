@@ -14,25 +14,11 @@ namespace ARPG.Entities.Sprites.Items.Food
 		public AppleItem(Texture2D tex, string name) : base(tex, name)
 		{
 			Position = new Vector2(100, 100);
-		}
-
-		public override void Update(float deltaTime)
-		{
-			if(Keyboard.GetState().IsKeyDown(Keys.H))
-			{
-				Scale -= 0.01f;
-			}
-			if(Keyboard.GetState().IsKeyDown(Keys.J))
-			{
-				Scale += 0.01f;
-			}
-
-			base.Update(deltaTime);
+			Scale = 1 / 2f;
 		}
 
 		public override void OnUse()
 		{
-			Console.WriteLine("Apple Used!");
 		}
 	}
 }

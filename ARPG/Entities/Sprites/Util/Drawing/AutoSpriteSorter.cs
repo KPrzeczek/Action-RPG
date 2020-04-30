@@ -34,7 +34,6 @@ namespace ARPG.Entities.Sprites.Util.Drawing
 		private void SortBasedOnY()
 		{
 			var bottom = parent.Rectangle.Bottom + YOffset;
-			Console.WriteLine(parent.GetType() + " :: " + bottom);
 			parent.Layer = (int)(bottom);
 		}
 	}

@@ -15,6 +15,28 @@ namespace ARPG.Entities.Sprites.Items
 			itemTypes = new Dictionary<int, Item>();
 		}
 
+		public static void GenerateItemDefinitions(ContentManager Content)
+		{
+			#region Equipment Definitions
+
+			#endregion
+
+			#region Food Definitions
+
+			AddItem(0, new AppleItem(Content.Load<Texture2D>("inventory/items/food/apple"), "Apple"));
+
+			#endregion
+
+			#region Weapon Definitions
+
+			#endregion
+
+			#region Miscellaneous Definitions
+
+			#endregion
+
+		}
+
 		#region Item Management
 
 		public static Item GetItem(int ID)
@@ -39,30 +61,10 @@ namespace ARPG.Entities.Sprites.Items
 				itemTypes.Add(ID, item);
 				return;
 			}
+
+			throw new Exception("Item ID is already taken.");
 		}
 
 		#endregion
-
-		public static void GenerateItemDefinitions(ContentManager Content)
-		{
-			#region Equipment Definitions
-
-			#endregion
-
-			#region Food Definitions
-
-			AddItem(0, new AppleItem(Content.Load<Texture2D>("items/food/apple"), "Apple"));
-
-			#endregion
-
-			#region Weapon Definitions
-
-			#endregion
-
-			#region Miscellaneous Definitions
-
-			#endregion
-
-		}
 	}
 }

@@ -132,8 +132,8 @@ namespace ARPG.Util.Collisions
 
 		public static bool ShapeOverlap_AABB(BoxCollider r1, BoxCollider r2)
 		{
-			var b1 = r1.CollisionArea;
-			var b2 = r2.CollisionArea;
+			var b1 = r1.Rectangle;
+			var b2 = r2.Rectangle;
 
 			if(b1.X < b2.X + b2.Width &&
 			    b1.X + b1.Width > b2.X &&
@@ -152,8 +152,8 @@ namespace ARPG.Util.Collisions
 
 		public static bool ShapeOverlap_AABB_STATIC(BoxCollider r1, BoxCollider r2)
 		{
-			var b1 = r1.CollisionArea;
-			var b2 = r2.CollisionArea;
+			var b1 = r1.Rectangle;
+			var b2 = r2.Rectangle;
 
 			if(ShapeOverlap_AABB(r1, r2))
 			{

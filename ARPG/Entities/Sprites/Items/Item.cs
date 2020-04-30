@@ -9,8 +9,7 @@ namespace ARPG.Entities.Sprites.Items
 {
 	public abstract class Item : Sprite
 	{
-		private Texture2D tex;
-
+		public Texture2D Icon { get; protected set; }
 		public string Name { get; protected set; }
 		public int MaxStackSize { get; protected set; }
 
@@ -19,6 +18,7 @@ namespace ARPG.Entities.Sprites.Items
 			Name = name;
 			MaxStackSize = 16;
 			AutoSpriteSorter.Continuous = true;
+			Icon = tex; // By default the icon is the texture
 		}
 
 		public override void Update(float deltaTime)
