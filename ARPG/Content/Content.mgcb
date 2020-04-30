@@ -20,6 +20,32 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/general/arial.spritefont
 
+#begin fonts/general/peepo.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/general/peepo.spritefont
+
+#begin fonts/general/ubuntu_mono.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/general/ubuntu_mono.spritefont
+
+#begin items/food/apple.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:items/food/apple.png
+
 #begin player/player.png
 /importer:TextureImporter
 /processor:TextureProcessor

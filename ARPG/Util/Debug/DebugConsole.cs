@@ -9,20 +9,25 @@ using System.Threading.Tasks;
 using ARPG.GUI.Static;
 
 /*
- * I want to admit that yes this class is a mess, but hey, it's for debug purposes.
- * I might keep it though since it might be fun to mess around with...
+ * I want to admit that yes this class is a complete and utter mess on fire, but hey, it's for 
+ * debug purposes. I might keep it though since it might be fun to mess around with...
  */
 
 namespace ARPG.Util.Debug
 {
 	public class DebugConsole : IComponent
 	{
+		private Vector2 linePos;
+
 		private SpriteFont font;
 
 		private GuiText outputText;
 		private GuiText inputText;
 
-		private bool canType = true;
+		private float lag = 0;
+		private float lagThreshold = 0.6f;
+
+		private bool canPress = true;
 		private bool canEnable = true;
 
 		private delegate void CommandFunction(params string[] args);
@@ -63,15 +68,17 @@ namespace ARPG.Util.Debug
 			inputText = new GuiText(font)
 			{
 				Text = "",
-				Position = new Vector2(30, ((Game1.ScreenHeight / 4) * 3) - 50),
-				Colour = Color.White
+				Position = new Vector2(10, ((Game1.ScreenHeight / 4) * 3)),
+				Colour = Color.White,
+				Layer = 0.95f
 			};
 
 			outputText = new GuiText(font)
 			{
-				Text = "",
-				Position = new Vector2(30, 30),
-				Colour = Color.White
+				Text = "Type 'help' for a list of all available commands.\n",
+				Position = new Vector2(10, 10),
+				Colour = Color.White,
+				Layer = 0.95f
 			};
 
 			this.font = font;
@@ -103,7 +110,7 @@ namespace ARPG.Util.Debug
 			if(Enabled)
 			{
 				rectangle.Y = (int)MathHelper.Lerp(rectangle.Y, 0f, 0.2f);
-				inputText.Position = new Vector2(inputText.Position.X, (int)MathHelper.Lerp(inputText.Position.Y, ((Game1.ScreenHeight / 4) * 3) - 50, 0.2f));
+				inputText.Position = new Vector2(inputText.Position.X, (int)MathHelper.Lerp(inputText.Position.Y, (Game1.ScreenHeight / 4) * 3, 0.2f));
 			}
 			else
 			{
@@ -117,13 +124,23 @@ namespace ARPG.Util.Debug
 
 			if(Enabled)
 			{
-				if(canType)
-				{
-					var keys = Keyboard.GetState().GetPressedKeys();
-					string key2str = "";
+				var keys = Keyboard.GetState().GetPressedKeys().ToList();
+				string key2str = "";
 
-					for(int ii = 0; ii < keys.Length; ii++)
+				if(Keyboard.GetState().GetPressedKeys().Length > 0)
+				{
+					lag += deltaTime;
+				}
+
+				#region Keyboard Detection
+
+				if(canPress)
+				{
+					int count = keys.Count;
+
+					for(int ii = 0; ii < count; ii++)
 					{
+						// Remove Key
 						if(keys[ii] == Keys.Back)
 						{
 							if(inputText.Text.Length > 0)
@@ -131,77 +148,119 @@ namespace ARPG.Util.Debug
 								inputText.Text = inputText.Text.Remove(inputText.Text.Length - 1);
 							}
 						}
-						else if(keys[ii] == Keys.F3)
-						{
-							key2str += "";
-						}
-						else if(keys[ii] == Keys.OemPeriod)
-						{
-							key2str += ".";
-						}
-						else if(keys[ii] == Keys.D1)
-						{
-							key2str += "1";
-						}
-						else if(keys[ii] == Keys.D2)
-						{
-							key2str += "2";
-						}
-						else if(keys[ii] == Keys.D3)
-						{
-							key2str += "3";
-						}
-						else if(keys[ii] == Keys.D4)
-						{
-							key2str += "4";
-						}
-						else if(keys[ii] == Keys.D5)
-						{
-							key2str += "5";
-						}
-						else if(keys[ii] == Keys.D6)
-						{
-							key2str += "6";
-						}
-						else if(keys[ii] == Keys.D7)
-						{
-							key2str += "7";
-						}
-						else if(keys[ii] == Keys.D8)
-						{
-							key2str += "8";
-						}
-						else if(keys[ii] == Keys.D9)
-						{
-							key2str += "9";
-						}
-						else if(keys[ii] == Keys.D0)
-						{
-							key2str += "0";
-						}
-						else if(keys[ii] == Keys.Space)
-						{
-							key2str += " ";
-						}
+
+						// Process CMD Key
 						else if(keys[ii] == Keys.Enter)
 						{
 							ProcessCommand(inputText.Text);
 							inputText.Text = "";
 						}
+
+						// Misc
+						else if(keys[ii] == Keys.F3)
+							key2str += "";
+						else if(keys[ii] == Keys.OemPeriod)
+							key2str += ".";
+						else if(keys[ii] == Keys.Space)
+							key2str += " ";
+
+						// Numbers
+						else if(keys[ii] == Keys.D1)
+							key2str += "1";
+						else if(keys[ii] == Keys.D2)
+							key2str += "2";
+						else if(keys[ii] == Keys.D3)
+							key2str += "3";
+						else if(keys[ii] == Keys.D4)
+							key2str += "4";
+						else if(keys[ii] == Keys.D5)
+							key2str += "5";
+						else if(keys[ii] == Keys.D6)
+							key2str += "6";
+						else if(keys[ii] == Keys.D7)
+							key2str += "7";
+						else if(keys[ii] == Keys.D8)
+							key2str += "8";
+						else if(keys[ii] == Keys.D9)
+							key2str += "9";
+						else if(keys[ii] == Keys.D0)
+							key2str += "0";
+
+						// Others
 						else
-						{
 							key2str += keys[ii].ToString().ToLower();
+
+						inputText.Text += key2str;
+					}
+
+					canPress = false;
+				}
+
+				if(lag > lagThreshold)
+				{
+					for(int ii = 0; ii < keys.Count; ii++)
+					{
+						// Remove Key
+						if(keys[ii] == Keys.Back)
+						{
+							if(inputText.Text.Length > 0)
+							{
+								inputText.Text = inputText.Text.Remove(inputText.Text.Length - 1);
+							}
 						}
 
-						canType = false;
+						// Process CMD Key
+						else if(keys[ii] == Keys.Enter)
+						{
+							ProcessCommand(inputText.Text);
+							inputText.Text = "";
+						}
+
+						// Misc
+						else if(keys[ii] == Keys.F3)
+							key2str += "";
+						else if(keys[ii] == Keys.OemPeriod)
+							key2str += ".";
+						else if(keys[ii] == Keys.Space)
+							key2str += " ";
+
+						// Numbers
+						else if(keys[ii] == Keys.D1)
+							key2str += "1";
+						else if(keys[ii] == Keys.D2)
+							key2str += "2";
+						else if(keys[ii] == Keys.D3)
+							key2str += "3";
+						else if(keys[ii] == Keys.D4)
+							key2str += "4";
+						else if(keys[ii] == Keys.D5)
+							key2str += "5";
+						else if(keys[ii] == Keys.D6)
+							key2str += "6";
+						else if(keys[ii] == Keys.D7)
+							key2str += "7";
+						else if(keys[ii] == Keys.D8)
+							key2str += "8";
+						else if(keys[ii] == Keys.D9)
+							key2str += "9";
+						else if(keys[ii] == Keys.D0)
+							key2str += "0";
+
+						// Others
+						else
+							key2str += keys[ii].ToString().ToLower();
+
+						inputText.Text += key2str;
 					}
-					inputText.Text += key2str;
 				}
 
 				if(Keyboard.GetState().GetPressedKeys().Length <= 0)
 				{
-					canType = true;
+					lag = 0;
+					canPress = true;
 				}
+
+				#endregion
 			}
 			else
 			{
@@ -217,7 +276,19 @@ namespace ARPG.Util.Debug
 			DebugTools.DrawRectangle(
 				spriteBatch,
 				rectangle,
-				new Color(0, 0, 0, 0.55f) // Draw transparent black rectangle
+				new Color(0, 0, 0, 0.55f)
+			);
+
+			// Draw Input Text Background
+			DebugTools.DrawRectangle(
+				spriteBatch,
+				new Rectangle(
+					rectangle.X,
+					rectangle.Y + ((Game1.ScreenHeight / 4) * 3) - 8,
+					rectangle.Width,
+					30
+				),
+				new Color(0.15f, 0.15f, 0.15f, 1f)
 			);
 
 			if(Enabled)
@@ -226,14 +297,27 @@ namespace ARPG.Util.Debug
 				outputText.Draw(deltaTime, spriteBatch);
 
 				// Draw Input Text
-				spriteBatch.DrawString(font, "> ", new Vector2(inputText.Position.X - 20, inputText.Position.Y), Color.White);
 				inputText.Draw(deltaTime, spriteBatch);
+
+				// Draw That Line Thing
+				float lenX = font.MeasureString(inputText.Text).X;
+				float lenY = font.MeasureString(inputText.Text).Y;
+
+				linePos.X = MathHelper.Lerp(linePos.X, inputText.Position.X + lenX + 5, 0.5f);
+
+				DebugTools.DrawLine(
+					spriteBatch,
+					new Vector2(linePos.X, inputText.Position.Y),
+					new Vector2(linePos.X, inputText.Position.Y + lenY),
+					Color.White,
+					1
+				);
 			}
 		}
 
 		#endregion
 
-		#region Function Handling
+		#region Command Handling
 
 		void ProcessCommand(string rawCommand)
 		{
@@ -286,20 +370,20 @@ namespace ARPG.Util.Debug
 			outputText.Text =
 				"help - print all commands available\n" +
 				"clear - clear output window\n" +
-				"noclip - turn off collisions\n" +
-				"showdebuglines - enable debug lines\n";
+				"noclip (true/false) - enable/disable collisions\n" +
+				"showdebuglines (true/false) - enable/disable debug lines\n";
 		}
 
 		private void showDebugLines(params string[] args)
 		{
 			ShowDebugLines = args[0] == "true" ? true : false;
-			outputText.Text += "DrawDebugLines set to " + ShowDebugLines + "\n";
+			outputText.Text += "showdebuglines set to " + ShowDebugLines + "\n";
 		}
 
 		private void noClip(params string[] args)
 		{
 			NoClip = args[0] == "true" ? true : false;
-			outputText.Text += "NoClip set to " + NoClip + "\n";
+			outputText.Text += "noclip set to " + NoClip + "\n";
 		}
 
 		#endregion

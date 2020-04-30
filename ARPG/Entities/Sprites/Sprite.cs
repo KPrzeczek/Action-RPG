@@ -118,19 +118,20 @@ namespace ARPG.Entities.Sprites
 				if(texture != null)
 				{
 					return new Rectangle(
-						((int)Position.X - (int)Origin.X) * (int)Scale, // TODO: this might be a bit buggy, maybe only origin should be multiplied by scale(?)
-						((int)Position.Y - (int)Origin.Y) * (int)Scale,
+						(int)Position.X - ((int)Origin.X * (int)Scale),
+						(int)Position.Y - ((int)Origin.Y * (int)Scale),
 						(int)texture.Width * (int)Scale,
-						(int)texture.Height * (int)scale
+						(int)texture.Height * (int)Scale
 					);
 				}
 
 				if(animationManager != null)
 				{
 					var anim = animations.FirstOrDefault().Value;
+
 					return new Rectangle(
-						((int)Position.X - (int)Origin.X) * (int)animationManager.Scale, // TODO: this might be a bit buggy, maybe only origin should be multiplied by scale(?)
-						((int)Position.Y - (int)Origin.Y) * (int)animationManager.Scale,
+						(int)Position.X - ((int)Origin.X * (int)animationManager.Scale),
+						(int)Position.Y - ((int)Origin.Y * (int)animationManager.Scale),
 						(int)anim.FrameWidth * (int)animationManager.Scale,
 						(int)anim.FrameHeight * (int)animationManager.Scale
 					);
@@ -151,8 +152,7 @@ namespace ARPG.Entities.Sprites
 					return new BoxCollider()
 					{
 						Parent = this,
-						CollisionArea = this.Rectangle,
-						Position = this.Position
+						CollisionArea = this.Rectangle
 					};
 				}
 			}

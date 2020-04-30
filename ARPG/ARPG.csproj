@@ -44,6 +44,9 @@
   <ItemGroup>
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Sprites\ICollidable.cs" />
+    <Compile Include="Entities\Sprites\Items\Food\AppleItem.cs" />
+    <Compile Include="Entities\Sprites\Items\Item.cs" />
+    <Compile Include="Entities\Sprites\Items\ItemContainer.cs" />
     <Compile Include="Entities\Sprites\Kinematic\Player\Player.cs" />
     <Compile Include="Entities\Sprites\Kinematic\Player\States\PlayerIdleState.cs" />
     <Compile Include="Entities\Sprites\Kinematic\Player\States\PlayerRunningState.cs" />
@@ -143,6 +146,9 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Entities\Sprites\Items\Equipment\" />
+    <Folder Include="Entities\Sprites\Items\Misc\" />
+    <Folder Include="Entities\Sprites\Items\Weapons\" />
     <Folder Include="GUI\Util\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

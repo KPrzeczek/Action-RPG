@@ -12,6 +12,8 @@ using ARPG.World.Tiles;
 using ARPG.World.Tiles.Forest;
 using ARPG.Entities.Sprites;
 using ARPG.Util.Collisions.Colliders;
+using ARPG.Entities.Sprites.Items;
+using ARPG.Entities.Sprites.Items.Food;
 
 namespace ARPG.Game_States
 {
@@ -28,9 +30,10 @@ namespace ARPG.Game_States
 
 		public override void LoadContent()
 		{
+			debugConsole = new DebugConsole(Content.Load<SpriteFont>("fonts/general/ubuntu_mono"));
+
 			var atlas = Content.Load<Texture2D>("world/forest/tiles/forest_background_tiles");
 			tileMap = new TileMap(atlas, new ForestFloorTile(atlas, 3, 1));
-
 			tileMap.Generate(new Vector2[,]
 			{
 				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0) },
@@ -58,7 +61,6 @@ namespace ARPG.Game_States
 			{
 				Position = new Vector2(75, 50)
 			};
-
 			var oakTree = new OakTree(Content.Load<Texture2D>("world/forest/environment/decor/oak_tree"))
 			{
 				Position = new Vector2(200, 100)
@@ -67,7 +69,12 @@ namespace ARPG.Game_States
 			entities.Add(player);
 			entities.Add(oakTree);
 
-			debugConsole = new DebugConsole(Content.Load<SpriteFont>("fonts/general/arial"));
+			#region Items
+
+			ItemContainer.GenerateItemDefinitions(Content);
+			entities.Add(ItemContainer.GetItem(0));
+
+			#endregion
 		}
 
 		public override void UnloadContent()
@@ -129,6 +136,7 @@ namespace ARPG.Game_States
 					{
 						var r = ((BoxCollider)sprite.Collider).CollisionArea;
 
+						// Draw Outline
 						DebugTools.DrawLine(spriteBatch, new Vector2(r.X, r.Y), new Vector2(r.X + r.Width, r.Y), Color.White, 1);
 						DebugTools.DrawLine(spriteBatch, new Vector2(r.X + r.Width, r.Y), new Vector2(r.X + r.Width, r.Y + r.Height), Color.White, 1);
 						DebugTools.DrawLine(spriteBatch, new Vector2(r.X + r.Width, r.Y + r.Height), new Vector2(r.X, r.Y + r.Height), Color.White, 1);
