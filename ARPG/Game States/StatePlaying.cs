@@ -13,18 +13,19 @@ using ARPG.World.Tiles.Forest;
 using ARPG.Entities.Sprites;
 using ARPG.Util.Collisions.Colliders;
 using ARPG.Entities.Sprites.Items;
-using ARPG.Entities.Sprites.Items.Gui;
+using ARPG.GUI;
+using ARPG.Entities.Sprites.Items.GUI;
 
 namespace ARPG.Game_States
 {
 	public class StatePlaying : StateBase
 	{
 		private TileMap tileMap;
+		
+		private List<IGuiComponent> guiComponents;
 		private List<Entity> entities;
 
-		private Inventory inventory;
-		private InventoryUI inventoryUI;
-
+		public static Inventory Inventory;
 		public static DebugConsole DebugConsole;
 
 		public StatePlaying(Game1 game, ContentManager content) : base(game, content)
@@ -33,19 +34,34 @@ namespace ARPG.Game_States
 
 		public override void LoadContent()
 		{
+			#region Debug
+
+			DebugConsole = new DebugConsole(Content.Load<SpriteFont>("fonts/general/ubuntu_mono"));
+
+			#endregion
+
+			#region Items
+
+			ItemContainer.GenerateItemDefinitions(Content);
+
 			var slotPrefab = new InventorySlot(
 				Content.Load<Texture2D>("inventory/gui/slot"),
 				Content.Load<Texture2D>("inventory/gui/slot_hover"),
 				Content.Load<Texture2D>("inventory/gui/slot_pressed")
-			)
-			{
-				Position = new Vector2(100, 100)
-			};
+			);
 
-			inventory = new Inventory();
-			inventoryUI = new InventoryUI(inventory, slotPrefab);
+			Inventory = new Inventory(9, 3);
 
-			DebugConsole = new DebugConsole(Content.Load<SpriteFont>("fonts/general/ubuntu_mono"));
+			#endregion
+
+			#region GUI
+
+			guiComponents = new List<IGuiComponent>();
+			guiComponents.Add(new InventoryUI(Inventory, slotPrefab));
+
+			#endregion
+
+			#region Tilemap
 
 			var atlas = Content.Load<Texture2D>("world/forest/tiles/forest_background_tiles");
 			tileMap = new TileMap(atlas, new ForestFloorTile(atlas, 3, 1));
@@ -60,9 +76,9 @@ namespace ARPG.Game_States
 				{ new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0) }
 			});
 
-			#region Entities
+			#endregion
 
-			#region Kinematic#
+			#region Entities
 
 			entities = new List<Entity>();
 
@@ -89,14 +105,6 @@ namespace ARPG.Game_States
 			entities.Add(oakTree);
 
 			#endregion
-
-			#region Items
-
-			ItemContainer.GenerateItemDefinitions(Content);
-
-			#endregion
-
-			#endregion
 		}
 
 		public override void UnloadContent()
@@ -106,7 +114,6 @@ namespace ARPG.Game_States
 		public override void Update(float deltaTime)
 		{
 			DebugConsole.Update(deltaTime);
-
 			if(DebugConsole.Enabled)
 				return;
 
@@ -115,12 +122,15 @@ namespace ARPG.Game_States
 				entity.Update(deltaTime);
 			}
 
-			inventoryUI.Update(deltaTime);
+			foreach(var component in guiComponents)
+			{
+				component.Update(deltaTime);
+			}
 		}
 
 		public override void PostUpdate(float deltaTime)
 		{
-			if(DebugConsole.NoClip == false)
+			if(DebugConsole.EnableCollisions)
 				CollisionHelper.HandleCollisions(entities);
 
 			int entityCount = entities.Count;
@@ -173,7 +183,11 @@ namespace ARPG.Game_States
 		public override void DrawGUI(float deltaTime, SpriteBatch spriteBatch)
 		{
 			DebugConsole.Draw(deltaTime, spriteBatch);
-			inventoryUI.Draw(deltaTime, spriteBatch);
+
+			foreach(var component in guiComponents)
+			{
+				component.Draw(deltaTime, spriteBatch);
+			}
 		}
 	}
 }

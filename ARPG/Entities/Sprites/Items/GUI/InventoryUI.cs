@@ -1,106 +1,112 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using ARPG.GUI;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
-namespace ARPG.Entities.Sprites.Items.Gui
+/*
+ * Handles inventory UI
+ */
+
+namespace ARPG.Entities.Sprites.Items.GUI
 {
-	public class InventoryUI : IComponent
+	public class InventoryUI : IGuiComponent
 	{
 		private Inventory inventory;
 		private InventorySlot[] slots;
 
-		private bool opened;
-		private bool canOpen;
+		private bool opened = false;
+		private bool canOpen = true;
 
 		public InventoryUI(Inventory inv, InventorySlot slotPrefab)
 		{
 			inventory = inv;
 			inventory.OnItemChangedCallback += UpdateUI;
 
-			slots = new InventorySlot[]
+			// Initialize Slots
+			slots = new InventorySlot[inventory.Space];
+
+			// Populate Slots
+			for(int ii = 0; ii < slots.Length; ii++)
 			{
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab,
-				slotPrefab
-			};
+				var clone = slotPrefab.Clone() as InventorySlot;
+				slots[ii] = clone;
+			}
+
+			// Set Slot Positions
+			int xx = 5, yy = 5;
+			int diff = 18;
+
+			for(int ii = 0; ii < slots.Length; ii++)
+			{
+				float scale = slots[ii].Scale;
+				slots[ii].Position = new Vector2(xx * scale, yy * scale);
+
+				xx += diff;
+
+				if(xx > (inventory.Width * diff))
+				{
+					xx = 5;
+					yy += diff;
+				}
+			}
+
+			slots[0].SetItem(ItemContainer.GetItemViaID(1));
 		}
 
 		public void Update(float deltaTime)
 		{
-			foreach(var slot in slots)
-				slot.Update(deltaTime);
+			#region Handle Opening
 
-			#region Open Handling
-
-			bool isKeyDown(Keys key) => Keyboard.GetState().IsKeyDown(key);
-
-			if(isKeyDown(Keys.E) && canOpen)
+			if(Keyboard.GetState().IsKeyDown(Keys.E) && canOpen)
 			{
 				opened = !opened;
 				canOpen = false;
 			}
 
-			if(!(isKeyDown(Keys.E)))
+			if(!(Keyboard.GetState().IsKeyDown(Keys.E)))
 			{
 				canOpen = true;
 			}
 
 			#endregion
+
+			if(!opened)
+				return;
+
+			foreach(var slot in slots)
+			{
+				slot.Update(deltaTime);
+			}
 		}
 
 		public void Draw(float deltaTime, SpriteBatch spriteBatch)
 		{
-			foreach(var slot in slots)
-				slot.Draw(deltaTime, spriteBatch);
+			if(!opened)
+				return;
 
-			slots[0].Draw(deltaTime, spriteBatch);
+			foreach(var slot in slots)
+			{
+				slot.Draw(deltaTime, spriteBatch);
+			}
 		}
 
 		private void UpdateUI()
 		{
-			for(int ii = 0; ii < slots.Length; ii++)
+			// TODO: THIS
+			/*
+			for(int i = 0; i < slots.Length; i++)
 			{
-				if(ii < inventory.Items.Count)
+				if(i < inventory.items.Count)
 				{
-					slots[ii].AddItem(inventory.Items[ii]);
+					slots[i].AddItem(inventory.items[i]);
 				}
 				else
 				{
-					slots[ii].Clear();
+					slots[i].Clear();
 				}
 			}
+			*/
 		}
 	}
 }

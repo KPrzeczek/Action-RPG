@@ -13,83 +13,71 @@ using ARPG.GUI.Static;
  * Strangely enough, it's probably the most nice-looking thing in this entire project!
  */
 
+/*
+ * Currently reworking... (PS: I cannot tell you how many times I've re-written this thing... maybe 3 times now?)
+ */
+
 namespace ARPG.Util.Debug
 {
 	public class DebugConsole : IComponent
 	{
 		private Vector2 linePos;
-
 		private SpriteFont font;
+
+		private KeyboardState lastKeyboardState = Keyboard.GetState();
+		private Keys[] lastKeys = Keyboard.GetState().GetPressedKeys();
+
+		private double timer;
 
 		private GuiText outputText;
 		private GuiText inputText;
 
-		private float lag = 0;
-		private float lagThreshold = 0.6f;
-
-		private bool canPress = true;
-		private bool canEnable = true;
+		private Rectangle rectangle;
 
 		private delegate void CommandFunction(params string[] args);
-
-		private Rectangle rectangle;
 		private Dictionary<string, CommandFunction> commands;
 
-		public bool Enabled = false;
+		private bool canEnable = true;
 
-		#region Console Variables
+		public bool Enabled { get; set; }
 
-		// TODO: Not sure if this is the way to go, so do fix this later
-		// TODO: Support for arguments, eg: drawdebuglines true
+		#region Game Manipulation Variables
 
-		public bool NoClip = false;
-		public bool ShowDebugLines = true;
+		public bool ShowDebugLines { get; set; }
+		public bool EnableCollisions { get; set; }
 
 		#endregion
 
-		#region Methods
-
 		public DebugConsole(SpriteFont font)
 		{
-			#region Commands
-
 			commands = new Dictionary<string, CommandFunction>();
-
 			commands.Add("clear", clear);
 			commands.Add("help", help);
 
-			commands.Add("showdebuglines", showDebugLines);
-			commands.Add("noclip", noClip);
+			this.font = font;
 
-			#endregion
-
-			#region Display
-
-			inputText = new GuiText(font)
+			inputText = new GuiText(this.font)
 			{
 				Text = "",
 				Position = new Vector2(10, ((Game1.ScreenHeight / 4) * 3)),
 				Colour = Color.White,
-				Layer = 0.95f
+				Layer = 0.975f
 			};
 
-			outputText = new GuiText(font)
+			outputText = new GuiText(this.font)
 			{
 				Text = "Type 'help' for a list of all available commands.\n",
 				Position = new Vector2(10, 10),
 				Colour = Color.White,
-				Layer = 0.95f
+				Layer = 0.975f
 			};
 
-			this.font = font;
 			rectangle = new Rectangle(
 				0,
 				0,
 				Game1.ScreenWidth,
 				(Game1.ScreenHeight / 4) * 3
 			);
-
-			#endregion
 		}
 
 		public void Update(float deltaTime)
@@ -101,8 +89,7 @@ namespace ARPG.Util.Debug
 				Enabled = !Enabled;
 				canEnable = false;
 			}
-
-			if(!Keyboard.GetState().IsKeyDown(Keys.F3))
+			else if(!Keyboard.GetState().IsKeyDown(Keys.F3))
 			{
 				canEnable = true;
 			}
@@ -110,17 +97,14 @@ namespace ARPG.Util.Debug
 			if(Enabled)
 			{
 				rectangle.Y = (int)MathHelper.Lerp(rectangle.Y, 0f, 0.2f);
-
-				inputText.Position = new Vector2(inputText.Position.X, (int)MathHelper.Lerp(inputText.Position.Y, (Game1.ScreenHeight / 4) * 3, 0.2f));
-				outputText.Position = new Vector2(inputText.Position.X, (inputText.Position.Y - (Game1.ScreenHeight / 4) * 3) + 10);
 			}
 			else
 			{
-				rectangle.Y = (int)MathHelper.Lerp(rectangle.Y, -Game1.ScreenWidth / 2f, 0.2f);
-
-				inputText.Position = new Vector2(inputText.Position.X, (int)MathHelper.Lerp(inputText.Position.Y, 0f, 0.2f));
-				outputText.Position = new Vector2(inputText.Position.X, (inputText.Position.Y - (Game1.ScreenHeight / 4) * 3) + 10);
+				rectangle.Y = (int)MathHelper.Lerp(rectangle.Y, (-(Game1.ScreenHeight / 4f) * 3) - 50, 0.2f);
 			}
+
+			inputText.Position = new Vector2(inputText.Position.X, rectangle.Y + ((Game1.ScreenHeight / 4f) * 3) + 5);
+			outputText.Position = new Vector2(outputText.Position.X, rectangle.Y + 10);
 
 			#endregion
 
@@ -128,147 +112,32 @@ namespace ARPG.Util.Debug
 
 			if(Enabled)
 			{
-				var keys = Keyboard.GetState().GetPressedKeys().ToList();
-				string key2str = "";
+				KeyboardState keyboard = Keyboard.GetState();
+				Keys[] keys = keyboard.GetPressedKeys();
 
-				if(Keyboard.GetState().GetPressedKeys().Length > 0)
+				foreach(Keys key in keys)
 				{
-					lag += deltaTime;
-				}
-
-				#region Keyboard Detection
-
-				if(canPress)
-				{
-					int count = keys.Count;
-
-					for(int ii = 0; ii < count; ii++)
+					if(key != Keys.None)
 					{
-						// Remove Key
-						if(keys[ii] == Keys.Back)
+						if(lastKeys.Contains(key))
 						{
-							if(inputText.Text.Length > 0)
+							if(timer > 16f)
 							{
-								inputText.Text = inputText.Text.Remove(inputText.Text.Length - 1);
+								timer = 0;
+								HandleKey(deltaTime, key);
 							}
 						}
-
-						// Process CMD Key
-						else if(keys[ii] == Keys.Enter)
-						{
-							ProcessCommand(inputText.Text);
-							inputText.Text = "";
-						}
-
-						// Misc
-						else if(keys[ii] == Keys.F3)
-							key2str += "";
-						else if(keys[ii] == Keys.OemPeriod)
-							key2str += ".";
-						else if(keys[ii] == Keys.Space)
-							key2str += " ";
-
-						// Numbers
-						else if(keys[ii] == Keys.D1)
-							key2str += "1";
-						else if(keys[ii] == Keys.D2)
-							key2str += "2";
-						else if(keys[ii] == Keys.D3)
-							key2str += "3";
-						else if(keys[ii] == Keys.D4)
-							key2str += "4";
-						else if(keys[ii] == Keys.D5)
-							key2str += "5";
-						else if(keys[ii] == Keys.D6)
-							key2str += "6";
-						else if(keys[ii] == Keys.D7)
-							key2str += "7";
-						else if(keys[ii] == Keys.D8)
-							key2str += "8";
-						else if(keys[ii] == Keys.D9)
-							key2str += "9";
-						else if(keys[ii] == Keys.D0)
-							key2str += "0";
-
-						// Others
 						else
-							key2str += keys[ii].ToString().ToLower();
-
-						inputText.Text += key2str;
-					}
-
-					canPress = false;
-				}
-
-				if(lag > lagThreshold)
-				{
-					for(int ii = 0; ii < keys.Count; ii++)
-					{
-						// Remove Key
-						if(keys[ii] == Keys.Back)
 						{
-							if(inputText.Text.Length > 0)
-							{
-								inputText.Text = inputText.Text.Remove(inputText.Text.Length - 1);
-							}
+							HandleKey(deltaTime, key);
 						}
-
-						// Process CMD Key
-						else if(keys[ii] == Keys.Enter)
-						{
-							ProcessCommand(inputText.Text);
-							inputText.Text = "";
-						}
-
-						// Misc
-						else if(keys[ii] == Keys.F3)
-							key2str += "";
-						else if(keys[ii] == Keys.OemPeriod)
-							key2str += ".";
-						else if(keys[ii] == Keys.Space)
-							key2str += " ";
-
-						// Numbers
-						else if(keys[ii] == Keys.D1)
-							key2str += "1";
-						else if(keys[ii] == Keys.D2)
-							key2str += "2";
-						else if(keys[ii] == Keys.D3)
-							key2str += "3";
-						else if(keys[ii] == Keys.D4)
-							key2str += "4";
-						else if(keys[ii] == Keys.D5)
-							key2str += "5";
-						else if(keys[ii] == Keys.D6)
-							key2str += "6";
-						else if(keys[ii] == Keys.D7)
-							key2str += "7";
-						else if(keys[ii] == Keys.D8)
-							key2str += "8";
-						else if(keys[ii] == Keys.D9)
-							key2str += "9";
-						else if(keys[ii] == Keys.D0)
-							key2str += "0";
-
-						// Others
-						else
-							key2str += keys[ii].ToString().ToLower();
-
-						inputText.Text += key2str;
 					}
 				}
 
-				if(Keyboard.GetState().GetPressedKeys().Length <= 0)
-				{
-					lag = 0;
-					canPress = true;
-				}
+				timer += deltaTime;
 
-				#endregion
-			}
-			else
-			{
-				inputText.Text = "";
+				lastKeyboardState = keyboard;
+				lastKeys = keys;
 			}
 
 			#endregion
@@ -276,34 +145,30 @@ namespace ARPG.Util.Debug
 
 		public void Draw(float deltaTime, SpriteBatch spriteBatch)
 		{
-			// Draw Background
 			DebugTools.DrawRectangle(
 				spriteBatch,
 				rectangle,
-				new Color(0, 0, 0, 0.55f)
+				new Color(0, 0, 0, 0.55f),
+				0.95f
 			);
 
-			// Draw Input Text Background
 			DebugTools.DrawRectangle(
 				spriteBatch,
 				new Rectangle(
 					rectangle.X,
-					rectangle.Y + ((Game1.ScreenHeight / 4) * 3) - 8,
+					rectangle.Y + ((Game1.ScreenHeight / 4) * 3),
 					rectangle.Width,
 					30
 				),
-				new Color(0.15f, 0.15f, 0.15f, 1f)
+				new Color(0.15f, 0.15f, 0.15f, 1f),
+				0.96f
 			);
 
 			if(Enabled)
 			{
-				// Draw Output Text
 				outputText.Draw(deltaTime, spriteBatch);
-
-				// Draw Input Text
 				inputText.Draw(deltaTime, spriteBatch);
 
-				// Draw That Line Thing
 				float lenX = font.MeasureString(inputText.Text).X;
 				float lenY = font.MeasureString(inputText.Text).Y;
 
@@ -313,17 +178,32 @@ namespace ARPG.Util.Debug
 					spriteBatch,
 					new Vector2(linePos.X, inputText.Position.Y),
 					new Vector2(linePos.X, inputText.Position.Y + lenY),
-					Color.White,
-					1
+					Color.White
 				);
 			}
 		}
 
-		#endregion
-
 		public void WriteToConsole(string text)
 		{
 			outputText.Text += text;
+		}
+
+		private void HandleKey(float deltaTime, Keys key)
+		{
+			string keyString = key.ToString();
+			if(key == Keys.Space)
+				inputText.Text += " ";
+			else if((key == Keys.Back || key == Keys.Delete) && inputText.Text.Length > 0)
+				inputText.Text = inputText.Text.Remove(inputText.Text.Length - 1);
+			else if(key == Keys.F3)
+				inputText.Text += "";
+			else if(key == Keys.Enter)
+			{
+				ProcessCommand(inputText.Text);
+				inputText.Text = "";
+			}
+			else
+				inputText.Text += keyString.ToLower();
 		}
 
 		#region Command Handling
@@ -333,20 +213,23 @@ namespace ARPG.Util.Debug
 			char[] delimiters = new char[] { ' ', '\r', '\n' };
 			int wordAmount = rawCommand.Split(delimiters, StringSplitOptions.RemoveEmptyEntries).Length;
 
+			// Command Example:     set       player_dead      true
+			//                    keyword        value        args[]
+
 			string[] words = rawCommand.Split(' ');
-			string command = rawCommand.Split(' ')[0];
+			string keyword = rawCommand.Split(' ')[0];
+			List<string> args = new List<string>();
 
-			List<string> arguments = new List<string>();
-
-			// Add arguments
+			// Add Args
 			foreach(string word in words)
 			{
 				if(!(word == words[0]))
 				{
-					arguments.Add(word);
+					args.Add(word);
 				}
 			}
 
+			/*
 			// If no arguments were given, automatically set argument to nothing
 			if(words.Length <= 1)
 			{
@@ -363,9 +246,10 @@ namespace ARPG.Util.Debug
 			{
 				outputText.Text += "Unknown Command\n";
 			}
+			*/
 		}
 
-		#region Commands
+		#region Command Functions
 
 		private void clear(params string[] args)
 		{
@@ -383,6 +267,11 @@ namespace ARPG.Util.Debug
 				"showdebuglines (true/false) - enable/disable debug lines\n";
 		}
 
+		#endregion
+
+		#endregion
+	}
+	/*
 		private void showDebugLines(params string[] args)
 		{
 			if(args[0] == "")
@@ -402,9 +291,5 @@ namespace ARPG.Util.Debug
 
 			outputText.Text += "noclip set to " + NoClip + "\n";
 		}
-
-		#endregion
-
-		#endregion
-	}
+	*/
 }

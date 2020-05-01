@@ -1,39 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ARPG.Entities.Sprites.Items.Gui
+/*
+ * Handles inventory logic
+ */
+
+namespace ARPG.Entities.Sprites.Items.GUI
 {
 	public class Inventory
 	{
 		public delegate void OnItemChanged();
 		public OnItemChanged OnItemChangedCallback;
 
-		public List<ItemStack> Items = new List<ItemStack>();
-		public int Space = 36;
-		public int AvailableSpace
+		public int Width;
+		public int Height;
+		public int Space
 		{
 			get
 			{
-				return (Space - Items.Count);
+				return (Width * Height);
 			}
 		}
 
-		public bool Add(ItemStack item)
+		public List<ItemStack> items = new List<ItemStack>();
+
+		public Inventory(int width, int height)
 		{
-			// Check if out of space
-			if(Items.Count >= Space)
+			Width = width;
+			Height = height;
+		}
+
+		public bool Add(ItemStack itemStack)
+		{
+			if(items.Count >= Space)
 			{
-				throw new Exception("Not Enough Inventory Space");
+				throw new Exception("Not enough space in inventory!");
 				return false;
 			}
 
-			// Add Item
-			Items.Add(item);
+			items.Add(itemStack);
 
-			// Trigger Callback
 			if(OnItemChangedCallback != null)
 			{
 				OnItemChangedCallback.Invoke();
@@ -42,14 +48,14 @@ namespace ARPG.Entities.Sprites.Items.Gui
 			return true;
 		}
 
-		public void Remove(ItemStack item)
+		public void Remove(ItemStack itemStack)
 		{
-			// Remove Item
-			Items.Remove(item);
+			items.Remove(itemStack);
 
-			// Trigger Callback
 			if(OnItemChangedCallback != null)
+			{
 				OnItemChangedCallback.Invoke();
+			}
 		}
 	}
 }

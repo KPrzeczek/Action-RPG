@@ -46,11 +46,12 @@
     <Compile Include="Entities\Sprites\ICollidable.cs" />
     <Compile Include="Entities\Sprites\Items\Food\AppleItem.cs" />
     <Compile Include="Entities\Sprites\Items\GUI\Inventory.cs" />
-    <Compile Include="Entities\Sprites\Items\GUI\InventoryUI.cs" />
     <Compile Include="Entities\Sprites\Items\GUI\InventorySlot.cs" />
+    <Compile Include="Entities\Sprites\Items\GUI\InventoryUI.cs" />
     <Compile Include="Entities\Sprites\Items\Item.cs" />
     <Compile Include="Entities\Sprites\Items\ItemContainer.cs" />
-    <Compile Include="Entities\Sprites\Items\GUI\ItemStack.cs" />
+    <Compile Include="Entities\Sprites\Items\ItemStack.cs" />
+    <Compile Include="Entities\Sprites\Items\Misc\NullItem.cs" />
     <Compile Include="Entities\Sprites\Kinematic\Player\Player.cs" />
     <Compile Include="Entities\Sprites\Kinematic\Player\States\PlayerIdleState.cs" />
     <Compile Include="Entities\Sprites\Kinematic\Player\States\PlayerRunningState.cs" />
@@ -152,7 +153,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\Sprites\Items\Equipment\" />
-    <Folder Include="Entities\Sprites\Items\Misc\" />
     <Folder Include="Entities\Sprites\Items\Weapons\" />
     <Folder Include="GUI\Util\" />
   </ItemGroup>

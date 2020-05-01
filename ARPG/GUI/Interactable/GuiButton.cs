@@ -124,7 +124,7 @@ namespace ARPG.GUI.Interactable
 				}
 			}
 
-			spriteBatch.Draw(tex, Position, null, colour, 0f, Origin, Scale, SpriteEffects.None, 0.9f);
+			spriteBatch.Draw(tex, Position, null, colour, 0f, Origin, Scale, SpriteEffects.None, 0.8f);
 
 			if(Text != null)
 			{

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ARPG.Game_States;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -11,7 +12,7 @@ namespace ARPG.Entities.Sprites.Items.Food
 {
 	public class AppleItem : Item
 	{
-		public AppleItem(Texture2D tex, string name) : base(tex, name)
+		public AppleItem(Texture2D tex, string name, int id) : base(tex, name, id)
 		{
 			Position = new Vector2(100, 100);
 			Scale = 1 / 2f;
@@ -19,6 +20,7 @@ namespace ARPG.Entities.Sprites.Items.Food
 
 		public override void OnUse()
 		{
+			Console.WriteLine("Apple Used!");
 		}
 	}
 }

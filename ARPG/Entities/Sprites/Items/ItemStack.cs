@@ -1,11 +1,10 @@
-﻿using ARPG.Entities.Sprites.Items;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ARPG.Entities.Sprites.Items.Gui
+namespace ARPG.Entities.Sprites.Items
 {
 	public class ItemStack
 	{

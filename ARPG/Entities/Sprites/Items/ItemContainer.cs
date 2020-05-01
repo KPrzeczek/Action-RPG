@@ -1,4 +1,5 @@
 ﻿using ARPG.Entities.Sprites.Items.Food;
+using ARPG.Entities.Sprites.Items.Misc;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,22 +9,24 @@ namespace ARPG.Entities.Sprites.Items
 {
 	public static class ItemContainer
 	{
-		private static readonly Dictionary<int, Item> itemTypes; // int = itemID, Item = item
+		private static readonly List<Item> itemTypes;
 
 		static ItemContainer()
 		{
-			itemTypes = new Dictionary<int, Item>();
+			itemTypes = new List<Item>();
 		}
 
 		public static void GenerateItemDefinitions(ContentManager Content)
 		{
+			itemTypes.Add(new NullItem(Content.Load<Texture2D>("inventory/items/misc/null_item"), "NULL", 0));
+
 			#region Equipment Definitions
 
 			#endregion
 
 			#region Food Definitions
 
-			AddItem(0, new AppleItem(Content.Load<Texture2D>("inventory/items/food/apple"), "Apple"));
+			itemTypes.Add(new AppleItem(Content.Load<Texture2D>("inventory/items/food/apple"), "Apple", 1));
 
 			#endregion
 
@@ -33,36 +36,26 @@ namespace ARPG.Entities.Sprites.Items
 
 			#region Miscellaneous Definitions
 
-			#endregion
+			
 
+			#endregion
 		}
 
 		#region Item Management
 
-		public static Item GetItem(int ID)
+		public static Item GetItemViaID(int ID)
 		{
-			// Try to find item of ID
-			if(itemTypes.ContainsKey(ID))
+			Item item = itemTypes.Find(c => c.ID == ID);
+
+			// Check if item exists
+			if(item != null)
 			{
 				// Return item
-				Item item = itemTypes[ID];
 				return item;
 			}
 
 			// Item doesn't exist
 			throw new Exception("Null Item ID.");
-		}
-
-		private static void AddItem(int ID, Item item)
-		{
-			// Only add the item ID doesn't exist
-			if(!(itemTypes.ContainsKey(ID)))
-			{
-				itemTypes.Add(ID, item);
-				return;
-			}
-
-			throw new Exception("Item ID is already taken.");
 		}
 
 		#endregion
