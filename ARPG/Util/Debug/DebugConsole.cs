@@ -51,8 +51,16 @@ namespace ARPG.Util.Debug
 		public DebugConsole(SpriteFont font)
 		{
 			commands = new Dictionary<string, CommandFunction>();
+
 			commands.Add("clear", clear);
 			commands.Add("help", help);
+
+			commands.Add("set", set);
+
+			commands.Add("showdebuglines", showDebugLines);
+			commands.Add("enablecollisions", enableCollisions);
+
+			#region GUI
 
 			this.font = font;
 
@@ -78,6 +86,8 @@ namespace ARPG.Util.Debug
 				Game1.ScreenWidth,
 				(Game1.ScreenHeight / 4) * 3
 			);
+
+			#endregion
 		}
 
 		public void Update(float deltaTime)
@@ -213,11 +223,9 @@ namespace ARPG.Util.Debug
 			char[] delimiters = new char[] { ' ', '\r', '\n' };
 			int wordAmount = rawCommand.Split(delimiters, StringSplitOptions.RemoveEmptyEntries).Length;
 
-			// Command Example:     set       player_dead      true
-			//                    keyword        value        args[]
-
 			string[] words = rawCommand.Split(' ');
 			string keyword = rawCommand.Split(' ')[0];
+
 			List<string> args = new List<string>();
 
 			// Add Args
@@ -229,24 +237,20 @@ namespace ARPG.Util.Debug
 				}
 			}
 
-			/*
-			// If no arguments were given, automatically set argument to nothing
-			if(words.Length <= 1)
+			if(wordAmount <= 1)
 			{
-				arguments.Add("");
+				args.Add("");
 			}
 
-			// Execute Command
-			if(commands.ContainsKey(command))
+			if(commands.ContainsKey(keyword))
 			{
-				string[] args = arguments.ToArray();
-				commands[command].Invoke(args);
+				string[] arguments = args.ToArray();
+				commands[keyword].Invoke(arguments);
 			}
 			else
 			{
 				outputText.Text += "Unknown Command\n";
 			}
-			*/
 		}
 
 		#region Command Functions
@@ -263,15 +267,15 @@ namespace ARPG.Util.Debug
 			outputText.Text =
 				"help - print all commands available\n" +
 				"clear - clear output window\n" +
-				"noclip (true/false) - enable/disable collisions\n" +
+				"enablecollisions (true/false) - enable/disable collisions\n" +
 				"showdebuglines (true/false) - enable/disable debug lines\n";
 		}
 
-		#endregion
+		private void set(params string[] args)
+		{
 
-		#endregion
-	}
-	/*
+		}
+
 		private void showDebugLines(params string[] args)
 		{
 			if(args[0] == "")
@@ -279,17 +283,21 @@ namespace ARPG.Util.Debug
 			else
 				ShowDebugLines = args[0] == "true" ? true : false;
 
-			outputText.Text += "showdebuglines set to " + ShowDebugLines + "\n";
+			outputText.Text += "showdebuglines set to: " + ShowDebugLines + "\n";
 		}
 
-		private void noClip(params string[] args)
+		private void enableCollisions(params string[] args)
 		{
 			if(args[0] == "")
-				NoClip = !NoClip;
+				EnableCollisions = !EnableCollisions;
 			else
-				NoClip = args[0] == "true" ? true : false;
+				EnableCollisions = args[0] == "true" ? true : false;
 
-			outputText.Text += "noclip set to " + NoClip + "\n";
+			outputText.Text += "enablecollisions set to: " + EnableCollisions + "\n";
 		}
-	*/
+
+		#endregion
+
+		#endregion
+	}
 }

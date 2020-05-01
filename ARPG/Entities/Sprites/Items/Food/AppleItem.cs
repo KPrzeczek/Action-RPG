@@ -1,12 +1,5 @@
-﻿using ARPG.Game_States;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ARPG.Entities.Sprites.Items.Food
 {
@@ -20,7 +13,6 @@ namespace ARPG.Entities.Sprites.Items.Food
 
 		public override void OnUse()
 		{
-			Console.WriteLine("Apple Used!");
 		}
 	}
 }

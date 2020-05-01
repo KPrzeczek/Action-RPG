@@ -48,6 +48,7 @@
     <Compile Include="Entities\Sprites\Items\GUI\Inventory.cs" />
     <Compile Include="Entities\Sprites\Items\GUI\InventorySlot.cs" />
     <Compile Include="Entities\Sprites\Items\GUI\InventoryUI.cs" />
+    <Compile Include="Entities\Sprites\Items\GUI\MouseSlot.cs" />
     <Compile Include="Entities\Sprites\Items\Item.cs" />
     <Compile Include="Entities\Sprites\Items\ItemContainer.cs" />
     <Compile Include="Entities\Sprites\Items\ItemStack.cs" />

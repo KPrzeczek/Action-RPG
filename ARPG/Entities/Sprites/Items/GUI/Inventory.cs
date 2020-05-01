@@ -30,6 +30,10 @@ namespace ARPG.Entities.Sprites.Items.GUI
 			Height = height;
 		}
 
+		#region Management
+
+		// While I can just directly set the items in a slot, this is also here for utility
+
 		public bool Add(ItemStack itemStack)
 		{
 			if(items.Count >= Space)
@@ -57,5 +61,7 @@ namespace ARPG.Entities.Sprites.Items.GUI
 				OnItemChangedCallback.Invoke();
 			}
 		}
+
+		#endregion
 	}
 }

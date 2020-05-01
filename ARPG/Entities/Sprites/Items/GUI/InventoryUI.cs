@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 
 /*
  * Handles inventory UI
@@ -14,6 +13,7 @@ namespace ARPG.Entities.Sprites.Items.GUI
 	{
 		private Inventory inventory;
 		private InventorySlot[] slots;
+		private MouseSlot mouseSlot;
 
 		private bool opened = false;
 		private bool canOpen = true;
@@ -25,6 +25,7 @@ namespace ARPG.Entities.Sprites.Items.GUI
 
 			// Initialize Slots
 			slots = new InventorySlot[inventory.Space];
+			mouseSlot = new MouseSlot();
 
 			// Populate Slots
 			for(int ii = 0; ii < slots.Length; ii++)
@@ -51,7 +52,7 @@ namespace ARPG.Entities.Sprites.Items.GUI
 				}
 			}
 
-			slots[0].SetItem(ItemContainer.GetItemViaID(1));
+			slots[0].Item = ItemContainer.GetItemViaID(1);
 		}
 
 		public void Update(float deltaTime)
@@ -75,9 +76,9 @@ namespace ARPG.Entities.Sprites.Items.GUI
 				return;
 
 			foreach(var slot in slots)
-			{
 				slot.Update(deltaTime);
-			}
+
+			mouseSlot.Update(deltaTime);
 		}
 
 		public void Draw(float deltaTime, SpriteBatch spriteBatch)
@@ -86,15 +87,13 @@ namespace ARPG.Entities.Sprites.Items.GUI
 				return;
 
 			foreach(var slot in slots)
-			{
 				slot.Draw(deltaTime, spriteBatch);
-			}
+
+			mouseSlot.Draw(deltaTime, spriteBatch);
 		}
 
 		private void UpdateUI()
 		{
-			// TODO: THIS
-			/*
 			for(int i = 0; i < slots.Length; i++)
 			{
 				if(i < inventory.items.Count)
@@ -106,7 +105,6 @@ namespace ARPG.Entities.Sprites.Items.GUI
 					slots[i].Clear();
 				}
 			}
-			*/
 		}
 	}
 }

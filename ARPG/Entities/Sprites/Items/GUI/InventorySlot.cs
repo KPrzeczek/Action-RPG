@@ -1,5 +1,4 @@
 ﻿using System;
-using ARPG.Game_States;
 using ARPG.GUI.Interactable;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,6 +8,16 @@ namespace ARPG.Entities.Sprites.Items.GUI
 	public class InventorySlot : GuiButton, ICloneable
 	{
 		public ItemStack ItemStack { get; private set; }
+		public int ItemCount
+		{
+			get => ItemStack.ItemCount;
+			set => ItemStack.ItemCount = value;
+		}
+		public Item Item
+		{
+			get => ItemStack.Item;
+			set => ItemStack.Item = value;
+		}
 
 		public InventorySlot(Texture2D tex, Texture2D hoverTex, Texture2D pressTex) : base(tex, hoverTex, pressTex)
 		{
@@ -20,7 +29,49 @@ namespace ARPG.Entities.Sprites.Items.GUI
 
 		private void InventorySlot_OnClick(object sender, EventArgs e)
 		{
-			ItemStack.Item?.OnUse();
+			if(MouseSlot.Item == null)
+			{
+				if(Item != null)
+				{
+					// The Mouse doesn't contain anything but the slot does
+					MouseSlot.Item = Item;
+					MouseSlot.ItemCount = ItemCount;
+					Clear();
+
+					return;
+				}
+				else
+				{
+					// Both are null, no point in doing anything
+					return;
+				}
+			}
+			else
+			{
+				if(Item == null)
+				{
+					// Only the mouse contains the item
+					Item = MouseSlot.Item;
+					ItemCount = MouseSlot.ItemCount;
+					MouseSlot.Clear();
+
+					return;
+				}
+				else
+				{
+					// Mouse and the slot contain items
+					Item item = MouseSlot.Item;
+					int count = MouseSlot.ItemCount;
+
+					MouseSlot.Item = Item;
+					MouseSlot.ItemCount = count;
+
+					Item = item;
+					ItemCount = count;
+
+					return;
+				}
+			}
 		}
 
 		public override void Draw(float deltaTime, SpriteBatch spriteBatch)
@@ -50,27 +101,18 @@ namespace ARPG.Entities.Sprites.Items.GUI
 			}
 		}
 
-		// Same as the SetItem function but also checks whether it can add to the stack
 		public void AddItem(ItemStack item)
 		{
 			// TODO: Check if item exists in slot, if so, add it to the itemCount rather than replacing it
 
 			ItemStack = item;
 		}
-		
-		// Directly sets the item in the slot
-		public void SetItem(Item item)
-		{
-			ItemStack.Item = item;
-		}
 
-		// Clears the slot of any items
 		public void Clear()
 		{
-			ItemStack = null;
+			ItemStack = new ItemStack();
 		}
 
-		// Uses the item in the slot
 		public void UseItem()
 		{
 			ItemStack?.Item?.OnUse();
@@ -78,7 +120,7 @@ namespace ARPG.Entities.Sprites.Items.GUI
 
 		public object Clone()
 		{
-			return this.MemberwiseClone() as InventorySlot;
+			return new InventorySlot(texture, hoverTexture, pressTexture) as InventorySlot;
 		}
 	}
 }

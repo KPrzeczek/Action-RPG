@@ -51,7 +51,7 @@ namespace ARPG.Entities.Sprites.Items
 			if(item != null)
 			{
 				// Return item
-				return item;
+				return item.Clone() as Item;
 			}
 
 			// Item doesn't exist
