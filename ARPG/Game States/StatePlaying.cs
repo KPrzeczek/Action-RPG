@@ -15,6 +15,7 @@ using ARPG.Util.Collisions.Colliders;
 using ARPG.Entities.Sprites.Items;
 using ARPG.GUI;
 using ARPG.Entities.Sprites.Items.GUI;
+using ARPG.GUI.Util;
 
 namespace ARPG.Game_States
 {
@@ -57,7 +58,13 @@ namespace ARPG.Game_States
 			#region GUI
 
 			guiComponents = new List<IGuiComponent>();
-			guiComponents.Add(new InventoryUI(Inventory, slotPrefab));
+			guiComponents.Add(new InventoryUI(Inventory, new InventoryUISettings()
+			{
+				InventorySlotPrefab = slotPrefab,
+
+				ItemHoverInfoNineSlice = Content.Load<Texture2D>("inventory/gui/item_hover_ns"),
+				ItemHoverInfoFont = Content.Load<SpriteFont>("fonts/general/peepo")
+			}));
 
 			#endregion
 
@@ -162,7 +169,7 @@ namespace ARPG.Game_States
 				entity.Draw(deltaTime, spriteBatch);
 			}
 
-			if(DebugConsole.ShowDebugLines)
+			if(DebugConsole.ShowCollisionLines)
 			{
 				foreach(Sprite sprite in entities)
 				{
@@ -188,6 +195,11 @@ namespace ARPG.Game_States
 			{
 				component.Draw(deltaTime, spriteBatch);
 			}
+		}
+
+		public void Instantiate(Entity entity)
+		{
+			entities.Add(entity);
 		}
 	}
 }

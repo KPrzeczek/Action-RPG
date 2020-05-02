@@ -14,11 +14,12 @@ namespace ARPG.Entities.Sprites.Items.GUI
 		private Inventory inventory;
 		private InventorySlot[] slots;
 		private MouseSlot mouseSlot;
+		private ItemHoverInfo itemHoverInfo;
 
 		private bool opened = false;
 		private bool canOpen = true;
 
-		public InventoryUI(Inventory inv, InventorySlot slotPrefab)
+		public InventoryUI(Inventory inv, InventoryUISettings settings)
 		{
 			inventory = inv;
 			inventory.OnItemChangedCallback += UpdateUI;
@@ -26,11 +27,12 @@ namespace ARPG.Entities.Sprites.Items.GUI
 			// Initialize Slots
 			slots = new InventorySlot[inventory.Space];
 			mouseSlot = new MouseSlot();
+			itemHoverInfo = new ItemHoverInfo(settings.ItemHoverInfoNineSlice, settings.ItemHoverInfoFont);
 
 			// Populate Slots
 			for(int ii = 0; ii < slots.Length; ii++)
 			{
-				var clone = slotPrefab.Clone() as InventorySlot;
+				var clone = settings.InventorySlotPrefab.Clone() as InventorySlot;
 				slots[ii] = clone;
 			}
 
@@ -79,6 +81,7 @@ namespace ARPG.Entities.Sprites.Items.GUI
 				slot.Update(deltaTime);
 
 			mouseSlot.Update(deltaTime);
+			itemHoverInfo.Update(deltaTime);
 		}
 
 		public void Draw(float deltaTime, SpriteBatch spriteBatch)
@@ -90,6 +93,7 @@ namespace ARPG.Entities.Sprites.Items.GUI
 				slot.Draw(deltaTime, spriteBatch);
 
 			mouseSlot.Draw(deltaTime, spriteBatch);
+			itemHoverInfo.Draw(deltaTime, spriteBatch);
 		}
 
 		private void UpdateUI()

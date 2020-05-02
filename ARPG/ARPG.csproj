@@ -48,6 +48,8 @@
     <Compile Include="Entities\Sprites\Items\GUI\Inventory.cs" />
     <Compile Include="Entities\Sprites\Items\GUI\InventorySlot.cs" />
     <Compile Include="Entities\Sprites\Items\GUI\InventoryUI.cs" />
+    <Compile Include="Entities\Sprites\Items\GUI\InventoryUISettings.cs" />
+    <Compile Include="Entities\Sprites\Items\GUI\ItemHoverInfo.cs" />
     <Compile Include="Entities\Sprites\Items\GUI\MouseSlot.cs" />
     <Compile Include="Entities\Sprites\Items\Item.cs" />
     <Compile Include="Entities\Sprites\Items\ItemContainer.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="GUI\Interactable\GuiTickbox.cs" />
     <Compile Include="GUI\Interactable\GuiWidget.cs" />
     <Compile Include="GUI\Static\GuiText.cs" />
+    <Compile Include="GUI\Util\GuiNineSliceGrid.cs" />
     <Compile Include="IComponent.cs" />
     <Compile Include="Managers\Sprites\AnimationManager.cs" />
     <Compile Include="Meta\Camera\Camera.cs" />
@@ -155,7 +158,6 @@
   <ItemGroup>
     <Folder Include="Entities\Sprites\Items\Equipment\" />
     <Folder Include="Entities\Sprites\Items\Weapons\" />
-    <Folder Include="GUI\Util\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

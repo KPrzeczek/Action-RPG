@@ -34,6 +34,30 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/general/ubuntu_mono.spritefont
 
+#begin gui/nine_slice_grid_test.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gui/nine_slice_grid_test.png
+
+#begin inventory/gui/item_hover_ns.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:inventory/gui/item_hover_ns.png
+
 #begin inventory/gui/slot.png
 /importer:TextureImporter
 /processor:TextureProcessor

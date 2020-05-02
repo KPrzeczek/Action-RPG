@@ -43,22 +43,14 @@ namespace ARPG.Util.Debug
 
 		#region Game Manipulation Variables
 
-		public bool ShowDebugLines { get; set; }
+		public bool ShowCollisionLines { get; set; }
 		public bool EnableCollisions { get; set; }
 
 		#endregion
 
 		public DebugConsole(SpriteFont font)
 		{
-			commands = new Dictionary<string, CommandFunction>();
-
-			commands.Add("clear", clear);
-			commands.Add("help", help);
-
-			commands.Add("set", set);
-
-			commands.Add("showdebuglines", showDebugLines);
-			commands.Add("enablecollisions", enableCollisions);
+			GenerateCommands();
 
 			#region GUI
 
@@ -218,6 +210,19 @@ namespace ARPG.Util.Debug
 
 		#region Command Handling
 
+		private void GenerateCommands()
+		{
+			commands = new Dictionary<string, CommandFunction>();
+
+			commands.Add("clear", clear);
+			commands.Add("help", help);
+
+			commands.Add("set", set);
+
+			commands.Add("showcollisionlines", showCollisionLines);
+			commands.Add("enablecollisions", enableCollisions);
+		}
+
 		private void ProcessCommand(string rawCommand)
 		{
 			char[] delimiters = new char[] { ' ', '\r', '\n' };
@@ -267,8 +272,8 @@ namespace ARPG.Util.Debug
 			outputText.Text =
 				"help - print all commands available\n" +
 				"clear - clear output window\n" +
-				"enablecollisions (true/false) - enable/disable collisions\n" +
-				"showdebuglines (true/false) - enable/disable debug lines\n";
+				"showcollisionlines (true/false) - enable/disable debug lines\n" +
+				"enablecollisions (true/false) - enable/disable collisions\n";
 		}
 
 		private void set(params string[] args)
@@ -276,14 +281,14 @@ namespace ARPG.Util.Debug
 
 		}
 
-		private void showDebugLines(params string[] args)
+		private void showCollisionLines(params string[] args)
 		{
 			if(args[0] == "")
-				ShowDebugLines = !ShowDebugLines;
+				ShowCollisionLines = !ShowCollisionLines;
 			else
-				ShowDebugLines = args[0] == "true" ? true : false;
+				ShowCollisionLines = args[0] == "true" ? true : false;
 
-			outputText.Text += "showdebuglines set to: " + ShowDebugLines + "\n";
+			outputText.Text += "showcollisionlines set to: " + ShowCollisionLines + "\n";
 		}
 
 		private void enableCollisions(params string[] args)

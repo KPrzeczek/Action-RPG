@@ -5,9 +5,9 @@ using System;
 
 namespace ARPG.Entities.Sprites.Items.GUI
 {
-	public class MouseSlot : IComponent
+	public class MouseSlot : Entity
 	{
-		private Vector2 position;
+		public static Vector2 Position;
 
 		public static ItemStack ItemStack { get; private set; }
 		public static int ItemCount
@@ -26,25 +26,25 @@ namespace ARPG.Entities.Sprites.Items.GUI
 			ItemStack = new ItemStack();
 		}
 
-		public void Update(float deltaTime)
+		public override void Update(float deltaTime)
 		{
-			position = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+			Position = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 		}
 
-		public void Draw(float deltaTime, SpriteBatch spriteBatch)
+		public override void Draw(float deltaTime, SpriteBatch spriteBatch)
 		{
 			if(ItemStack?.Item?.Icon != null)
 			{
 				spriteBatch.Draw(
 					ItemStack.Item.Icon,
-					position,
+					Position,
 					null,
 					Color.White,
 					0f,
 					Vector2.Zero,
 					3f,
 					SpriteEffects.None,
-					0.86f
+					0.925f
 				);
 			}
 		}

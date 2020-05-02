@@ -1,4 +1,5 @@
 ﻿using System;
+using ARPG.Game_States;
 using ARPG.GUI.Interactable;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -74,6 +75,20 @@ namespace ARPG.Entities.Sprites.Items.GUI
 			}
 		}
 
+		public override void Update(float deltaTime)
+		{
+			base.Update(deltaTime);
+
+			if(isHovering && Item != null)
+			{
+				ItemHoverInfo.ItemInfo = Item.Clone() as Item;
+			}
+			else
+			{
+				ItemHoverInfo.ItemInfo = null;
+			}
+		}
+
 		public override void Draw(float deltaTime, SpriteBatch spriteBatch)
 		{
 			base.Draw(deltaTime, spriteBatch);
@@ -96,7 +111,7 @@ namespace ARPG.Entities.Sprites.Items.GUI
 					),
 					(Scale / 4) * 3,
 					SpriteEffects.None,
-					0.93f
+					0.91f
 				);
 			}
 		}
@@ -111,11 +126,6 @@ namespace ARPG.Entities.Sprites.Items.GUI
 		public void Clear()
 		{
 			ItemStack = new ItemStack();
-		}
-
-		public void UseItem()
-		{
-			ItemStack?.Item?.OnUse();
 		}
 
 		public object Clone()

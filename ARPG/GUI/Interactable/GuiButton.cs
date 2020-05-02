@@ -3,10 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ARPG.GUI.Interactable
 {
@@ -17,9 +13,9 @@ namespace ARPG.GUI.Interactable
 		private MouseState currentMouse;
 		private MouseState previousMouse;
 
-		private bool isHovering;
-
 		#endregion Fields
+
+		protected bool isHovering;
 
 		protected Texture2D texture;
 		protected Texture2D hoverTexture;
