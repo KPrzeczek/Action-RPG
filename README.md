@@ -6,9 +6,6 @@ Some random ARPG Game I'm working on
 ## Inspiration
 * CrossCode  
 * Terraria  
-* Stardew Valley  
-  
-### Public Trello Board
-https://trello.com/b/u0xESYEC/arpg
+* Stardew Valley 
 
 # Yep, I'm completely re-doing it once again. Rushed through and failed to understand the 'Component' in [E]ntity [C]omponent [S]ystem :(
