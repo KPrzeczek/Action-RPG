@@ -7,5 +7,5 @@ Some random ARPG Game I'm working on
 * CrossCode  
 * Terraria  
 * Stardew Valley 
-
-# Yep, I'm completely re-doing it once again. Rushed through and failed to understand the 'Component' in [E]ntity [C]omponent [S]ystem :(
+  
+Hello! If you're reading this - hi! I've currently put the project on hold for now since I don't think the actual framework architecture is good enough. I'm going to learn more before I get back to it :)
